@@ -1,0 +1,140 @@
+[
+    {
+        "categorie": "Situation familialle",
+        "criteres": [
+            {
+                "nom": "celibataire 25 30 ans",
+                "nb_points": 1
+            },
+            {
+                "nom": "celibataire 30 35 ans",
+                "nb_points": 2
+            },
+            {
+                "nom": "celibataire 35 et plus",
+                "nb_points": 3
+            },
+            {
+                "nom": "marié",
+                "nb_points": 4
+            },
+            {
+                "nom": "divorce/veuf",
+                "nb_points": 2
+            }
+        ],
+        "___id": "T000008R000002",
+        "___s": true
+    },
+    {
+        "categorie": "Grade",
+        "criteres": [
+            {
+                "nom": "1_4",
+                "nb_points": 1
+            },
+            {
+                "nom": "5_9",
+                "nb_points": 2
+            },
+            {
+                "nom": "10_11",
+                "nb_points": 3
+            },
+            {
+                "nom": "12_15",
+                "nb_points": 4
+            },
+            {
+                "nom": "16_et_plus",
+                "nb_points": 5
+            }
+        ],
+        "___id": "T000008R000003",
+        "___s": true
+    },
+    {
+        "categorie": "ancienneté par année",
+        "criteres": [
+            {
+                "nom": "ancienneté MESRS",
+                "nb_points": 1
+            },
+            {
+                "nom": "ancienneté hors secteur (FP) ",
+                "nb_points": 1
+            }
+        ],
+        "___id": "T000008R000004",
+        "___s": true
+    },
+    {
+        "categorie": "conjoint au MESRS",
+        "criteres": [
+            {
+                "nom": "conjoint_mers",
+                "nb_points": 2
+            }
+        ],
+        "___id": "T000008R000005",
+        "___s": true
+    },
+    {
+        "categorie": "responsabilités administratives",
+        "criteres": [
+            {
+                "nom": "secretaire_general",
+                "nb_points": 2
+            },
+            {
+                "nom": "sous_directeur",
+                "nb_points": 2
+            },
+            {
+                "nom": "responsable_de_structure",
+                "nb_points": 2
+            },
+            {
+                "nom": "chef_de_service_rectorat",
+                "nb_points": 2
+            },
+            {
+                "nom": "chef_de_bureau",
+                "nb_points": 2
+            },
+            {
+                "nom": "chef_de_service_institut",
+                "nb_points": 2
+            },
+            {
+                "nom": "chef_de_section",
+                "nb_points": 2
+            }
+        ],
+        "___id": "T000008R000006",
+        "___s": true
+    },
+    {
+        "categorie": "Ayant_droits",
+        "criteres": [
+            {
+                "nom": "Moudjahid",
+                "nb_points": 6
+            },
+            {
+                "nom": "fille_chahid",
+                "nb_points": 6
+            },
+            {
+                "nom": "veuf_chahid",
+                "nb_points": 6
+            },
+            {
+                "nom": "fils_chahid",
+                "nb_points": 6
+            }
+        ],
+        "___id": "T000008R000007",
+        "___s": true
+    }
+]
