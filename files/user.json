@@ -4,14 +4,15 @@
         "password": "$2b$10$YEQmKDiPVw08fHYsGyIqfelWvkHQKNs6E8w.FZtOkGBSaQDUQQbUu",
         "type_profil": "valideur",
         "photo_de_profil": "hello there!",
-        "___id": "T000007R000002",
+        "___id": "T000010R000002",
         "___s": true
     },
     {
         "email": "testjfdhvkljxhvk3@esi.dz",
-        "password": "$2b$10$166z/yURZD6bcP6h4Os3d.r.EXoTGI2IwoWbjCUyrT1cuJXMu4XFS",
-        "type_profil": "valideur",
-        "___id": "T000007R000003",
+        "password": "$2b$10$xJkovtrRurZv2FqSfa8RSOew0wRzSMlXN3qD1G38KBBjYrd0tMDqe",
+        "type_profil": "zzzzz",
+        "photo_de_profil": "hello there!",
+        "___id": "T000010R000003",
         "___s": true
     },
     {
@@ -19,7 +20,7 @@
         "password": "$2b$10$YwD0ZjvlkdqFS60osRF9/uM41mjyUYTZlrX0AkROwJGi5aUEg8f5y",
         "type_profil": "editeur",
         "photo_de_profil": "aaaaaaaaaa",
-        "___id": "T000007R000004",
+        "___id": "T000010R000004",
         "___s": true
     }
 ]

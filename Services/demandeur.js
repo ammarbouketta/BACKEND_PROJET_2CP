@@ -125,22 +125,21 @@ exports.etat_actual_demand = (req, res) => {
             date_fin_activite_Mersrs: obj[i-1].Experience_professionnelle.date_fin_activite_Mersrs,
             Responsabilite: obj[i-1].Experience_professionnelle.Responsabilite,
             hors_secteur_MESRS: hors_secteur_MERSRS,
-            nom1: obj[i-1].Conjoint.Nom,
-            prenom1: obj[i-1].Conjoint.prenom,
+            nom1: obj[i-1].Conjoint.nomco,
+            prenom1: obj[i-1].Conjoint.prenomco,
             nomar1: obj[i-1].Conjoint.Nomarco,
             prenomar1: obj[i-1].Conjoint.prenomcoar,
-            date_de_naissance1: obj[i-1].Conjoint.Date_de_naissance,
-            Commune_de_naissance2: obj[i-1].Conjoint.Commune_de_naissance,
-            Willaya_de_naissance2: obj[i-1].Conjoint.Willaya_de_naissance,
-            Prenom_du_pere2: obj[i-1].Conjoint.Prenom_du_pere,
-            Nom_mere2: obj[i-1].Conjoint.Nom_mere,
-            Prenom_mere2: obj[i-1].Conjoint.Prenom_mere,
+            date_de_naissance1: obj[i-1].Conjoint.Date_de_naissanceco,
+            Commune_de_naissance2: obj[i-1].Conjoint.Commune_de_naissanceco,
+            Willaya_de_naissance2: obj[i-1].Conjoint.Willaya_de_naissanceco,
+            Prenom_du_pere2: obj[i-1].Conjoint.Prenom_du_pereco,
+            Nom_mere2: obj[i-1].Conjoint.Nom_mereco,
+            Prenom_mere2: obj[i-1].Conjoint.Prenom_mereco,
             Conjoint_MESRS: Conjoint_MESRS,
             Moujahid: moujahid,
             fils_chahid: fils,
             fille_chahid: fille,
             veuf_chahid: veuf,
-            R_num_dossier: obj[i-1].Recours.num_dossier||"/",
             date_recours: obj[i-1].Recours.date_recours||"/",
             motif: obj[i-1].Recours.motif||"/",
             valide :valide,
@@ -200,8 +199,8 @@ exports.valider = (req, res,next) => {
 }
 
 exports.delete = (req, res, next) => {
-    if (demandeur({ "Numero_dossier": req.query.Numero_dossier }).get().length === 1) {
-        demandeur({ "Numero_dossier": req.query.Numero_dossier }).remove();
+    if (demandeur({ "Numero_dossier": req.body.Numero_dossier }).get().length === 1) {
+        demandeur({ "Numero_dossier": req.body.Numero_dossier }).remove();
         ecrire();
         var email="test3@esi.dz";
         var donnee="Suppresion d'un demandeur ";
@@ -415,56 +414,56 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
                     const matricule= req.body.matricule;
                     const Nombre_de_points= 0;
                     const info_generale = {
-                        nom: req.body.info_generale.nom||"",
-                        prenom: req.body.info_generale.prenom||"",
-                        nomar: req.body.info_generale.nomar||"",
-                        prenomar: req.body.info_generale.prenomar||"",
-                        Adresse: req.body.info_generale.Adresse||"",
-                        numero_de_tel: req.body.info_generale.numero_de_tel||"",
-                        Date_de_naissance: req.body.info_generale.Date_de_naissance||"",
-                        Commune_de_naissance: req.body.info_generale.Commune_de_naissance||"",
-                        Willaya_de_naissance: req.body.info_generale.Wilaya_de_naissance||"",
-                        Sexe: req.body.info_generale.Sexe||"",
-                        Email: req.body.info_generale.Email||"",
-                        code_postal: req.body.info_generale.code_postal||"",
-                        Prenom_du_pere: req.body.info_generale.Prenom_du_pere||"",
-                        Nom_mere: req.body.info_generale.Nom_mere||"",
-                        prenom_mere: req.body.info_generale.prenom_mere||"",
-                        Situation_familiale: req.body.info_generale.Situation_familiale||"",
-                        Nombre_enfants: req.body.info_generale.Nombre_enfants||"",
-                        photo: req.body.info_generale.photo||"",
+                        nom: req.body.nom||"",
+                        prenom: req.body.prenom||"",
+                        nomar: req.body.nomar||"",
+                        prenomar: req.body.prenomar||"",
+                        Adresse: req.body.Adresse||"",
+                        numero_de_tel: req.body.numero_de_tel||"",
+                        Date_de_naissance: req.body.Date_de_naissance||"",
+                        Commune_de_naissance: req.body.Commune_de_naissance||"",
+                        Willaya_de_naissance: req.body.Wilaya_de_naissance||"",
+                        Sexe: req.body.Sexe||"",
+                        Email: req.body.Email||"",
+                        code_postal: req.body.code_postal||"",
+                        Prenom_du_pere: req.body.Prenom_du_pere||"",
+                        Nom_mere: req.body.Nom_mere||"",
+                        prenom_mere: req.body.prenom_mere||"",
+                        Situation_familiale: req.body.Situation_familiale||"",
+                        Nombre_enfants: req.body.Nombre_enfants||"",
+                        photo: req.body.photo||"",
                     };
 
                     const Experiance_professionnelle = {
-                        direction: req.body.Experiance_professionnelle.direction||"",
-                        Etablissement: req.body.Experiance_professionnelle.Etablissement||"",
-                        Grade: req.body.Experiance_professionnelle.Grade||"",
-                        date_debut_activite: req.body.Experiance_professionnelle.date_debut_activite||"",
-                        date_fin_activite: req.body.Experiance_professionnelle.date_fin_activite||"",
-                        Hors_secteur_MERSRS:req.body.Experiance_professionnelle.Hors_secteur_MERSRS||false,
-                        date_debut_activite_Mersrs: req.body.Experiance_professionnelle.date_debut_activite_Mersrs||"",
-                        date_fin_activite_Mersrs: req.body.Experiance_professionnelle.date_fin_activite_Mersrs||"",
-                        Responsabilite: req.body.Experiance_professionnelle.Responsabilite||"",
+                        direction: req.body.direction||"",
+                        Etablissement: req.body.Etablissement||"",
+                        Grade: req.body.Grade||"",
+                        date_debut_activite: req.body.date_debut_activite||"",
+                        date_fin_activite: req.body.date_fin_activite||"",
+                        Hors_secteur_MERSRS:req.body.Hors_secteur_MERSRS||false,
+                        date_debut_activite_Mersrs: req.body.date_debut_activite_Mersrs||"",
+                        date_fin_activite_Mersrs: req.body.date_fin_activite_Mersrs||"",
+                        Responsabilite: req.body.Responsabilite||"",
                     };
                     const Conjoint = {
-                        Nom: req.body.Conjoint.Nom||"",
-                        Nomarco: req.body.Conjoint.Nomarco||"",
-                        prenom: req.body.Conjoint.prenom||"",
-                        prenomarco: req.body.Conjoint.prenomarco||"",
-                        Date_de_naissance: req.body.Conjoint.Date_de_naissance||"",
-                        Willaya_de_naissance: req.body.Conjoint.Willaya_de_naissance||"",
-                        Commune_de_naissance: req.body.Conjoint.Commune_de_naissance||"",
-                        prenom_du_pere: req.body.Conjoint.prenom_du_pere||"",
-                        nom_mere: req.body.Conjoint.nom_mere||"",
-                        prenom_mere: req.body.Conjoint.prenom_mere||"",
-                        Conjoint_MESRS: req.body.Conjoint.Conjoint_MESRS||false,
+                        nomco: req.body.nomco||"",
+                        Nomarco: req.body.Nomarco||"",
+                        prenomco: req.body.prenomco||"",
+                        prenomarco: req.body.prenomarco||"",
+                        Date_de_naissanceco: req.body.Date_de_naissanceco||"",
+                        Willaya_de_naissanceco: req.body.Willaya_de_naissanceco||"",
+                        Commune_de_naissanceco: req.body.Commune_de_naissanceco||"",
+                        prenom_du_pereco: req.body.prenom_du_pereco||"",
+                        nom_mereco: req.body.nom_mereco||"",
+                        prenom_mereco: req.body.prenom_mereco||"",
+                        Conjoint_MESRS: req.body.Conjoint_MESRS||false,
                         
                     }
                     const Ayant_droit = {
-                        Moujahid: req.body.Ayant_droit.Moujahid||false,
-                        fils_chahid: req.body.Ayant_droit.fils_chahid||false,
-                        veuf_chahid: req.body.Ayant_droit.veuf_chahid||false,
-                        fille_chahid: req.body.Ayant_droit.fille_chahid||false,
+                        Moujahid: req.body.Moujahid||false,
+                        fils_chahid: req.body.fils_chahid||false,
+                        veuf_chahid: req.body.veuf_chahid||false,
+                        fille_chahid: req.body.fille_chahid||false,
                 
                     };
                     const Recours = [];
@@ -560,10 +559,6 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
                         },
                     ];  
        
-        
- 
-
-
                          const demand = demandeur.insert({
                         "Numero_dossier" : Numero_dossier,
                         "matricule":matricule,
@@ -645,58 +640,58 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
             //info general
             if (update.Numero_dossier===req.body.Numero_dossier) {
                  update.info_generale.nom = req.body.nom||update.info_generale.nom;
-                 update.info_generale.prenom = req.body.info_generale.prenom||update.info_generale.prenom;
-                 update.info_generale.nomar = req.body.info_generale.nomar||update.info_generale.nomar;
-                 update.info_generale.prenomar = req.body.info_generale.prenomar||update.info_generale.prenomar;
+                 update.info_generale.prenom = req.body.prenom||update.info_generale.prenom;
+                 update.info_generale.nomar = req.body.nomar||update.info_generale.nomar;
+                 update.info_generale.prenomar = req.body.prenomar||update.info_generale.prenomar;
                  update.info_generale.matricule = req.body.matricule||update.matricule;
-                 update.info_generale.Adresse = req.body.info_generale.Adresse||update.info_generale.Adresse;
-                 update.info_generale.numero_de_tel = req.body.info_generale.numero_de_tel||update.info_generale.numero_de_tel;
-                 update.info_generale.Date_de_naissance = req.body.info_generale.Date_de_naissance||update.info_generale.Date_de_naissance;
-                 update.info_generale.Commune_de_naissance = req.body.info_generale.Commune_de_naissance||update.info_generale.Commune_de_naissance;
-                 update.info_generale.Willaya_de_naissance = req.body.info_generale.Willaya_de_naissance||update.info_generale.Willaya_de_naissance;
-                 update.info_generale.Sexe = req.body.info_generale.Sexe||update.info_generale.Sexe;
-                 update.info_generale.Email = req.body.info_generale.Email||update.info_generale.Email;
-                 update.info_generale.code_postal = req.body.info_generale.code_postal||update.info_generale.code_postal;
-                 update.info_generale.Prenom_du_pere = req.body.info_generale.Prenom_du_pere||update.info_generale.Prenom_du_pere;
-                 update.info_generale.Nom_mere = req.body.info_generale.Nom_mere||update.info_generale.Nom_mere;
-                 update.info_generale.prenom_mere = req.body.info_generale.prenom_mere||update.info_generale.prenom_mere;
-                 update.info_generale.Situation_familiale = req.body.info_generale.Situation_familiale||update.info_generale.Situation_familiale;
-                 update.info_generale.Nombre_enfants = req.body.info_generale.Nombre_enfants||update.info_generale.Nombre_enfants;
+                 update.info_generale.Adresse = req.body.Adresse||update.info_generale.Adresse;
+                 update.info_generale.numero_de_tel = req.body.numero_de_tel||update.info_generale.numero_de_tel;
+                 update.info_generale.Date_de_naissance = req.body.Date_de_naissance||update.info_generale.Date_de_naissance;
+                 update.info_generale.Commune_de_naissance = req.body.Commune_de_naissance||update.info_generale.Commune_de_naissance;
+                 update.info_generale.Willaya_de_naissance = req.body.Willaya_de_naissance||update.info_generale.Willaya_de_naissance;
+                 update.info_generale.Sexe = req.body.Sexe||update.info_generale.Sexe;
+                 update.info_generale.Email = req.body.Email||update.info_generale.Email;
+                 update.info_generale.code_postal = req.body.code_postal||update.info_generale.code_postal;
+                 update.info_generale.Prenom_du_pere = req.body.Prenom_du_pere||update.info_generale.Prenom_du_pere;
+                 update.info_generale.Nom_mere = req.body.Nom_mere||update.info_generale.Nom_mere;
+                 update.info_generale.prenom_mere = req.body.prenom_mere||update.info_generale.prenom_mere;
+                 update.info_generale.Situation_familiale = req.body.Situation_familiale||update.info_generale.Situation_familiale;
+                 update.info_generale.Nombre_enfants = req.body.Nombre_enfants||update.info_generale.Nombre_enfants;
                  update.info_generale.Nombre_de_points = req.body.Nombre_de_points||update.Nombre_de_points;
-                 update.info_generale.photo = req.body.info_generale.photo||update.info_generale.photo;
+                 update.info_generale.photo = req.body.photo||update.info_generale.photo;
 
             //exp pro
-                 update.Experience_professionnelle.direction = req.body.Experience_professionnelle.direction||update.Experience_professionnelle.direction;
-                 update.Experience_professionnelle.Etablissement = req.body.Experience_professionnelle.Etablissement||update.Experience_professionnelle.Etablissement;
-                 update.Experience_professionnelle.Grade = req.body.Experience_professionnelle.Grade||update.Experience_professionnelle.Grade;
-                 update.Experience_professionnelle.date_debut_activite = req.body.Experience_professionnelle.date_debut_activite||update.Experience_professionnelle.date_debut_activite;
-                 update.Experience_professionnelle.Hors_secteur_MERSRS = req.body.Experience_professionnelle.Hors_secteur_MERSRS||update.Experience_professionnelle.Hors_secteur_MERSRS;
-                 update.Experience_professionnelle.date_debut_activite_Mersrs = req.body.Experience_professionnelle.date_debut_activite_Mersrs||update.Experience_professionnelle.date_debut_activite_Mersrs;
-                 update.Experience_professionnelle.date_fin_activite_Mersrs = req.body.Experience_professionnelle.date_fin_activite_Mersrs||update.Experience_professionnelle.date_fin_activite_Mersrs;
-                 update.Experience_professionnelle.Responsabilite = req.body.Experience_professionnelle.Responsabilite||update.Experience_professionnelle.Responsabilite;
+                 update.Experience_professionnelle.direction = req.body.direction||update.Experience_professionnelle.direction;
+                 update.Experience_professionnelle.Etablissement = req.body.Etablissement||update.Experience_professionnelle.Etablissement;
+                 update.Experience_professionnelle.Grade = req.body.Grade||update.Experience_professionnelle.Grade;
+                 update.Experience_professionnelle.date_debut_activite = req.body.date_debut_activite||update.Experience_professionnelle.date_debut_activite;
+                 update.Experience_professionnelle.Hors_secteur_MERSRS = req.body.Hors_secteur_MERSRS||update.Experience_professionnelle.Hors_secteur_MERSRS;
+                 update.Experience_professionnelle.date_debut_activite_Mersrs = req.body.date_debut_activite_Mersrs||update.Experience_professionnelle.date_debut_activite_Mersrs;
+                 update.Experience_professionnelle.date_fin_activite_Mersrs = req.body.date_fin_activite_Mersrs||update.Experience_professionnelle.date_fin_activite_Mersrs;
+                 update.Experience_professionnelle.Responsabilite = req.body.Responsabilite||update.Experience_professionnelle.Responsabilite;
            
             //conjoint
-                 update.Conjoint.Nom = req.body.Conjoint.Nom||update.Conjoint.Nom;
-                 update.Conjoint.Nomarco = req.body.Conjoint.Nomarco||update.Conjoint.Nomarco;
-                 update.Conjoint.prenom = req.body.Conjoint.prenom||update.Conjoint.prenom;
-                 update.Conjoint.prenomarco = req.body.Conjoint.prenomarco||update.Conjoint.prenomarco;
-                 update.Conjoint.Date_de_naissance = req.body.Conjoint.Date_de_naissance||update.Conjoint.Date_de_naissance;
-                 update.Conjoint.Commune_de_naissance = req.body.Conjoint.Commune_de_naissance||update.Conjoint.Commune_de_naissance;
-                 update.Conjoint.Willaya_de_naissance = req.body.Conjoint.Willaya_de_naissance||update.Conjoint.Willaya_de_naissance;
-                 update.Conjoint.Prenom_du_pere = req.body.Conjoint.Prenom_du_pere||update.Conjoint.Prenom_du_pere;
-                 update.Conjoint.Nom_mere = req.body.Conjoint.Nom_mere||update.Conjoint.Nom_mere;
-                 update.Conjoint.prenom_mere = req.body.Conjoint.prenom_mere||update.Conjoint.prenom_mere;
-                 update.Conjoint.Conjoint_MESRS = req.body.Conjoint.Conjoint_MESRS||update.Conjoint.Conjoint_MESRS;
+                 update.Conjoint.nomco = req.body.nomco||update.Conjoint.nomco;
+                 update.Conjoint.Nomarco = req.body.Nomarco||update.Conjoint.Nomarco;
+                 update.Conjoint.prenomco = req.body.prenomco||update.Conjoint.prenomco;
+                 update.Conjoint.prenomarco = req.body.prenomarco||update.Conjoint.prenomarco;
+                 update.Conjoint.Date_de_naissanceco = req.body.Date_de_naissanceco||update.Conjoint.Date_de_naissanceco;
+                 update.Conjoint.Commune_de_naissanceco = req.body.Commune_de_naissanceco||update.Conjoint.Commune_de_naissanceco;
+                 update.Conjoint.Willaya_de_naissanceco = req.body.Willaya_de_naissanceco||update.Conjoint.Willaya_de_naissanceco;
+                 update.Conjoint.Prenom_du_pereco = req.body.Prenom_du_pereco||update.Conjoint.Prenom_du_pereco;
+                 update.Conjoint.Nom_mereco = req.body.Nom_mereco||update.Conjoint.Nom_mereco;
+                 update.Conjoint.prenom_mereco = req.body.prenom_mereco||update.Conjoint.prenom_mereco;
+                 update.Conjoint.Conjoint_MESRS = req.body.Conjoint_MESRS||update.Conjoint.Conjoint_MESRS;
 
             //ayant droit
-                 update.Ayant_droit.Moujahid = req.body.Ayant_droit.Moujahid||update.Ayant_droit.Moujahid;
-                 update.Ayant_droit.fils_chahid = req.body.Ayant_droit.fils_chahid||update.Ayant_droit.fils_chahid;
-                 update.Ayant_droit.veuf_chahid = req.body.Ayant_droit.veuf_chahid||update.Ayant_droit.veuf_chahid;
-                 update.Ayant_droit.fille_chahid = req.body.Ayant_droit.fille_chahid||update.Ayant_droit.fille_chahid;
+                 update.Ayant_droit.Moujahid = req.body.Moujahid||update.Ayant_droit.Moujahid;
+                 update.Ayant_droit.fils_chahid = req.body.fils_chahid||update.Ayant_droit.fils_chahid;
+                 update.Ayant_droit.veuf_chahid = req.body.veuf_chahid||update.Ayant_droit.veuf_chahid;
+                 update.Ayant_droit.fille_chahid = req.body.fille_chahid||update.Ayant_droit.fille_chahid;
                  
             //recours     
-                 update.Recours.motif =req.body.Recours.motif||update.Recours.motif;
-                 update.Recours.date_recours =req.body.Recours.date_recours||update.Recours.date_recours;
+                 update.Recours.motif =req.body.motif||update.Recours.motif;
+                 update.Recours.date_recours =req.body.date_recours||update.Recours.date_recours;
 
             //info
                  update.dossier_complet = req.body.dossier_complet||update.dossier_complet;

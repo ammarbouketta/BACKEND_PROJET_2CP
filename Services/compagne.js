@@ -16,9 +16,9 @@ exports.afficher = (req, res,next) => {
 exports.ajouter_quota = (req,res,next) => {
    compagne.insert({
        "ID_quota":compagne().get().length,//sinon on fait l'année de quota
-       "nombre_quota":req.body.nombre_quota,
-       "date_debut":req.body.date_debut,
-       "date_fin":req.body.date_fin,
+       "nombre_quota":req.body.nombre_quota||"",
+       "date_debut":req.body.date_debut||"",
+       "date_fin":req.body.date_fin||"",
 
    });
    ecrire();
@@ -53,9 +53,9 @@ exports.supprimer_quota = (req,res,next) => {
     if (compagne({ "ID_quota": req.body.ID_quota }).get().length === 1)
      {
             const comp = compagne({ "ID_quota": req.body.ID_quota }).update({
-                    "nombre_quota":req.body.nombre_quota||nombre_quota,
-                    "date_debut": req.body.date_debut||date_debut,
-                    "date_fin": req.body.date_fin||date_fin,
+                    "nombre_quota":req.body.nombre_quota||compagne({ "ID_quota": req.body.ID_quota }).select("nombre_quota")[0],
+                    "date_debut": req.body.date_debut||compagne({ "ID_quota": req.body.ID_quota }).select("date_debut")[0],
+                    "date_fin": req.body.date_fin||compagne({ "ID_quota": req.body.ID_quota }).select("date_fin")[0],
                 }, true);
             ecrire();
 

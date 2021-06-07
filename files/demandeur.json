@@ -15,7 +15,7 @@
             "Willaya_de_naissance": "jijel",
             "Sexe": "masculin",
             "Email": "ja_bouketta@esi.dz",
-            "code_postal":"",
+            "code_postal": "",
             "Prenom_du_pere": "hafid",
             "Nom_mere": "sabah",
             "Prenom_mere": "ami",
@@ -35,16 +35,16 @@
             "Responsabilite": "étudiant à esi"
         },
         "Conjoint": {
-            "Nom": "ammar",
-            "Nomarco": "kjhmljh",
-            "prenom": "boukette",
-            "prenomarco": "jklgjgjk",
-            "Date_de_naissance": "16/6/2001",
-            "Commune_de_naissance": "jijel",
-            "Willaya_de_naissance": "jijel",
-            "Prenom_du_pere": "bbbb",
-            "Nom_mere": "aaaa",
-            "Prenom_mere": "ami",
+            "nomco": "ammar",
+            "Nomarco": "jkhkjmhl",
+            "prenomco": "boukliette",
+            "prenomcoar": "kkjhjljh",
+            "Date_de_naissanceco": "16/6/2001",
+            "Commune_de_naissanceco": "jijel",
+            "Willaya_de_naissanceco": "jijel",
+            "Prenom_du_pereco": "bbbb",
+            "Nom_mereco": "aaaa",
+            "Prenom_mereco": "ami",
             "Conjoint_MESRS": true
         },
         "Ayant_droit": {
@@ -205,11 +205,11 @@
         "___s": true
     },
     {
-        "Numero_dossier": 44,
-        "Nombre_de_points": 67,
+        "Numero_dossier": "R44",
+        "Nombre_de_points": 88,
         "matricule": "19/204",
         "info_generale": {
-            "nom": "gj",
+            "nom": "AAAAAAAAAAAAAAAAAAAA",
             "prenom": "eeeeeeeeeeeeee",
             "nomar": "بوقطة ",
             "prenomar": "عمار",
@@ -220,13 +220,15 @@
             "Willaya_de_naissance": "jijel",
             "Sexe": "masculin",
             "Email": "ja_bouketta@esi.dz",
-            "code_postal":"",
+            "code_postal": "",
             "Prenom_du_pere": "hafid",
             "Nom_mere": "sabah",
             "Prenom_mere": "ami",
             "Situation_familliale": "célibataire",
             "Nombre_enfants": "/",
-            "photo": ""
+            "photo": "",
+            "matricule": "19/204",
+            "Nombre_de_points": 88
         },
         "Experience_professionnelle": {
             "direction": "/",
@@ -240,16 +242,16 @@
             "Responsabilite": "étudiant à esi"
         },
         "Conjoint": {
-            "Nom": "ammar",
+            "nomco": "ammar",
             "Nomarco": "jkhkjmhl",
-            "prenom": "boukliette",
+            "prenomco": "boukliette",
             "prenomcoar": "kkjhjljh",
-            "Date_de_naissance": "16/6/2001",
-            "Commune_de_naissance": "jijel",
-            "Willaya_de_naissance": "jijel",
-            "Prenom_du_pere": "bbbb",
-            "Nom_mere": "aaaa",
-            "Prenom_mere": "ami",
+            "Date_de_naissanceco": "16/6/2001",
+            "Commune_de_naissanceco": "jijel",
+            "Willaya_de_naissanceco": "jijel",
+            "Prenom_du_pereco": "bbbb",
+            "Nom_mereco": "aaaa",
+            "Prenom_mereco": "ami",
             "Conjoint_MESRS": true
         },
         "Ayant_droit": {
@@ -258,7 +260,12 @@
             "veuf_chahid": true,
             "fille_chahid": true
         },
-        "Recours": [],
+        "Recours": [
+            {
+                "date_recours": "07/06/2021 - 18:35:22",
+                "motif": "khdsfsgf"
+            }
+        ],
         "nb_point_par_critere": [
             {
                 "categorie": "Situation familialle",
@@ -419,7 +426,7 @@
             "Willaya_de_naissance": "jijel",
             "Sexe": "masculin",
             "Email": "ja_bouketta@esi.dz",
-            "code_postal":"",
+            "code_postal": "",
             "Prenom_du_pere": "hafid",
             "Nom_mere": "sabah",
             "Prenom_mere": "ami",
@@ -439,16 +446,16 @@
             "Responsabilite": "étudiant à esi"
         },
         "Conjoint": {
-            "Nom": "ammar",
+            "nomco": "ammar",
             "Nomarco": "jkhkjmhl",
-            "prenom": "boukliette",
+            "prenomco": "boukliette",
             "prenomcoar": "kkjhjljh",
-            "Date_de_naissance": "16/6/2001",
-            "Commune_de_naissance": "jijel",
-            "Willaya_de_naissance": "jijel",
-            "Prenom_du_pere": "bbbb",
-            "Nom_mere": "aaaa",
-            "Prenom_mere": "ami",
+            "Date_de_naissanceco": "16/6/2001",
+            "Commune_de_naissanceco": "jijel",
+            "Willaya_de_naissanceco": "jijel",
+            "Prenom_du_pereco": "bbbb",
+            "Nom_mereco": "aaaa",
+            "Prenom_mereco": "ami",
             "Conjoint_MESRS": true
         },
         "Ayant_droit": {

@@ -36,18 +36,16 @@ exports.lister = (req, res, next) => {
     res.json(User().get());
     next();
 };
-exports.update_info = (req, res, next) => {
+exports.update_mot_de_passe = (req, res, next) => {
     if (User({ "email": req.body.email }).get().length === 1) {
         bcrypt.hash(req.body.password, 10)
             .then(hash => {
                 const user = User({ "email": req.body.email }).update({
-                    "password": hash,
-                    "type_profil": req.body.type_profil,
-                    "photo_de_profil": req.body.photo_de_profil,
+                    "password": hash||User({ "email": req.body.email }).select("password")[0],
                 });
                 ecrire(process.env.User_file, User().get());
                 var email1="test3@esi.dz";
-                var donnee="Modification des informations d'un compte .";
+                var donnee="Modification de mot de passe d'un compte .";
                 ajouter(email1,donnee);
                 res.status(200).json({ message: 'Infos modifiées !' });
                 next();
@@ -63,6 +61,28 @@ exports.update_info = (req, res, next) => {
         next();
     }
 };
+
+exports.update_info = (req, res, next) => {
+    if (User({ "email": req.body.email }).get().length === 1) {
+      
+                const user = User({ "email": req.body.email }).update({
+                    "type_profil": req.body.type_profil||User({ "email": req.body.email }).select("type_profil")[0],
+                    "photo_de_profil": req.body.photo_de_profil||User({ "email": req.body.email }).select("photo_de_profil")[0],
+                });
+                ecrire(process.env.User_file, User().get());
+                var email1="test3@esi.dz";
+                var donnee="Modification des informations d'un compte .";
+                ajouter(email1,donnee);
+                res.status(200).json({ message: 'Infos modifiées !' });       
+    } else {
+        res.json({
+            "Error": "User n'existe pas "
+        });
+        next();
+    }
+};
+
+
 exports.login = (req, res, next) => {
     if (User({ "email": req.body.email }).get().length === 1) {
         bcrypt.compare(req.body.password, User({ "email": req.body.email }).select('password')[0]).then(

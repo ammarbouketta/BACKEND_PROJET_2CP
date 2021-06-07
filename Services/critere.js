@@ -12,7 +12,7 @@ exports.ajout_critere = (req, res, next) => {
             obj.push(
                         {
                               "nom":req.body.nom,
-                              "point":req.body.point
+                              "nb_points":req.body.nb_points
                         }
                     );
             const crit = critere.merge(
@@ -50,7 +50,7 @@ exports.ajout_critere = (req, res, next) => {
                             [
                                 { 
                                     "nom":req.body.nom,
-                                    "point":req.body.point
+                                    "nb_points":req.body.nb_points
                                 }
                             ]
            
@@ -64,7 +64,7 @@ exports.ajout_critere = (req, res, next) => {
                                     [
                                         { 
                                             "nom":req.body.nom,
-                                            "point":req.body.point
+                                            "nb_points":req.body.nb_points
                                         }
                                     ]
                             }
@@ -252,6 +252,9 @@ const affectation = () => {
 
 exports.affectation_auth = (req, res, next) => {
     affectation();
+    var email="test3@esi.dz";
+              var donnee="Affectation authomatique des points de tous demandeur .";
+              ajouter(email,donnee);
     res.status(201).json({ message: 'affectation faite!' });   
 }
 
@@ -261,7 +264,7 @@ exports.affectation_auth_demand = (req, res, next) => {
        
                 affectation_id(req.body.Numero_dossier);    
                     var email="test3@esi.dz";
-                    var donnee="Affectationdes points d'un demandeur .";
+                    var donnee="Affectationdes des points d'un demandeur .";
                     ajouter(email,donnee);
                 res.status(200).json({ message: 'point affecter !' });
 
