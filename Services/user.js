@@ -68,20 +68,26 @@ exports.login = (req, res, next) => {
         bcrypt.compare(req.body.password, User({ "email": req.body.email }).select('password')[0]).then(
                 (valid) => {
                     if (!valid) {
-                        return res.status(401).json({
-                            error: 'Mot de passe incorrect!'
+                        res.status(401).json({
+                            "message": 'Mot de passe incorrect!'
                         });
                     }
                     //mot de passe correcte, on genere donc notre token a base de profil de l'utilisateur
-                    var email1=req.body.email;
-                    var donnee="L'utilisateur connecté(e).";
-                    ajouter(email1,donnee);
+                    //var email1=req.body.email;
+                    //var donnee="L'utilisateur connecté(e).";
+                    //ajouter(email1,donnee);
                     res.status(200).json({
                         profil: User({ "email": req.body.email }).select('type_profil')[0],
-                        token: jwt.sign({ profil: User({ "email": req.body.email }).select('type_profil')[0] },
+                        token: jwt.sign({ profil: User({ "email": req.body.email }).select('type_profil')[0],
+                    email : req.body.email },
                             'RANDOM_TOKEN_SECRET', { expiresIn: '24h' }
                         )
+                    
+                        
+                        //profil: User({ "email": req.body.email }).select('type_profil')[0],
+                        //     'token' : 
                     });
+                    //localStorage.setItem('token',"rrrr")
                   
                 })
             .catch(err => {
@@ -92,8 +98,8 @@ exports.login = (req, res, next) => {
                 next();
             });
     } else {
-        res.json({
-            "Error": "User n'existe pas "
+        res.status(401).json({
+            "message": "User n'existe pas "
         });
         next();
     }
