@@ -92,7 +92,7 @@ exports.etat_actual_demand = (req, res) => {
         var Conjoint_MESRS;
         if(obj[i-1].Conjoint.Conjoint_MESRS===true){Conjoint_MESRS = "X"}
         else Conjoint_MESRS=" ";
-
+        
         doc.setData({
             Numero_dossier: obj[i - 1].Numero_dossier,
             nom: obj[i-1].info_generale.nom,
@@ -109,6 +109,7 @@ exports.etat_actual_demand = (req, res) => {
             numero_tel: obj[i-1].info_generale.numero_de_tel,
             Sexe: obj[i-1].info_generale.Sexe,
             Email: obj[i-1].info_generale.Email,
+            code_postal: obj[i-1].info_generale.code_postal,
             Prenom_du_pere: obj[i-1].info_generale.Prenom_du_pere,
             Nom_mere: obj[i-1].info_generale.Nom_mere,
             Prenom_mere: obj[i-1].info_generale.Prenom_mere,
@@ -139,8 +140,9 @@ exports.etat_actual_demand = (req, res) => {
             fils_chahid: fils,
             fille_chahid: fille,
             veuf_chahid: veuf,
-            R_num_dossier: obj[i-1].Recours.num_dossier,
-            date_recours: obj[i-1].Recours.date_recours,
+            R_num_dossier: obj[i-1].Recours.num_dossier||"/",
+            date_recours: obj[i-1].Recours.date_recours||"/",
+            motif: obj[i-1].Recours.motif||"/",
             valide :valide,
             categorie:obj[i-1].nb_point_par_critere,
            // image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4QIJBywfp3IOswAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAAkUlEQVQY052PMQqDQBREZ1f/d1kUm3SxkeAF/FdIjpOcw2vpKcRWCwsRPMFPsaIQSIoMr5pXDGNUFd9j8TOn7kRW71fvO5HTq6qqtnWtzh20IqE3YXtL0zyKwAROQLQ5l/c9gHjfKK6wMZjADE6s49Dver4/smEAc2CuqgwAYI5jU9NcxhHEy60sni986H9+vwG1yDHfK1jitgAAAABJRU5ErkJggg=="
@@ -413,55 +415,56 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
                     const matricule= req.body.matricule;
                     const Nombre_de_points= 0;
                     const info_generale = {
-                        nom: req.body.nom||"",
-                        prenom: req.body.prenom||"",
-                        nomar: req.body.nomar||"",
-                        prenomar: req.body.prenomar||"",
-                        Adresse: req.body.Adresse||"",
-                        numero_de_tel: req.body.numero_de_tel||"",
-                        Date_de_naissance: req.body.Date_de_naissance||"",
-                        Commune_de_naissance: req.body.Commune_de_naissance||"",
-                        Willaya_de_naissance: req.body.Wilaya_de_naissance||"",
-                        Sexe: req.body.Sexe||"",
-                        Email: req.body.Email||"",
-                        Prenom_du_pere: req.body.Prenom_du_pere||"",
-                        Nom_mere: req.body.Nom_mere||"",
-                        prenom_mere: req.body.prenom_mere||"",
-                        Situation_familiale: req.body.Situation_familiale||"",
-                        Nombre_enfants: req.body.Nombre_enfants||"",
-                        photo: req.body.photo||"",
+                        nom: req.body.info_generale.nom||"",
+                        prenom: req.body.info_generale.prenom||"",
+                        nomar: req.body.info_generale.nomar||"",
+                        prenomar: req.body.info_generale.prenomar||"",
+                        Adresse: req.body.info_generale.Adresse||"",
+                        numero_de_tel: req.body.info_generale.numero_de_tel||"",
+                        Date_de_naissance: req.body.info_generale.Date_de_naissance||"",
+                        Commune_de_naissance: req.body.info_generale.Commune_de_naissance||"",
+                        Willaya_de_naissance: req.body.info_generale.Wilaya_de_naissance||"",
+                        Sexe: req.body.info_generale.Sexe||"",
+                        Email: req.body.info_generale.Email||"",
+                        code_postal: req.body.info_generale.code_postal||"",
+                        Prenom_du_pere: req.body.info_generale.Prenom_du_pere||"",
+                        Nom_mere: req.body.info_generale.Nom_mere||"",
+                        prenom_mere: req.body.info_generale.prenom_mere||"",
+                        Situation_familiale: req.body.info_generale.Situation_familiale||"",
+                        Nombre_enfants: req.body.info_generale.Nombre_enfants||"",
+                        photo: req.body.info_generale.photo||"",
                     };
 
                     const Experiance_professionnelle = {
-                        direction: req.body.direction||"",
-                        Etablissement: req.body.Etablissement||"",
-                        Grade: req.body.Grade||"",
-                        date_debut_activite: req.body.date_debut_activite||"",
-                        date_fin_activite: req.body.date_fin_activite||"",
-                        Hors_secteur_MERSRS:req.body.Hors_secteur_MERSRS||false,
-                        date_debut_activite_Mersrs: req.body.date_debut_activite_Mersrs||"",
-                        date_fin_activite_Mersrs: req.date_fin_activite_Mersrs||"",
-                        Responsabilite: req.body.Responsabilite||"",
+                        direction: req.body.Experiance_professionnelle.direction||"",
+                        Etablissement: req.body.Experiance_professionnelle.Etablissement||"",
+                        Grade: req.body.Experiance_professionnelle.Grade||"",
+                        date_debut_activite: req.body.Experiance_professionnelle.date_debut_activite||"",
+                        date_fin_activite: req.body.Experiance_professionnelle.date_fin_activite||"",
+                        Hors_secteur_MERSRS:req.body.Experiance_professionnelle.Hors_secteur_MERSRS||false,
+                        date_debut_activite_Mersrs: req.body.Experiance_professionnelle.date_debut_activite_Mersrs||"",
+                        date_fin_activite_Mersrs: req.body.Experiance_professionnelle.date_fin_activite_Mersrs||"",
+                        Responsabilite: req.body.Experiance_professionnelle.Responsabilite||"",
                     };
                     const Conjoint = {
-                        Nom: req.body.Nom||"",
-                        Nomarco: req.body.Nomarco||"",
-                        prenom: req.body.prenom||"",
-                        prenomarco: req.body.prenomarco||"",
-                        Date_de_naissance: req.body.Date_de_naissance||"",
-                        Willaya_de_naissance: req.body.Willaya_de_naissance||"",
-                        Commune_de_naissance: req.body.Commune_de_naissance||"",
-                        prenom_du_pere: req.body.prenom_du_pere||"",
-                        nom_mere: req.body.nom_mere||"",
-                        prenom_mere: req.body.prenom_mere||"",
-                        Conjoint_MESRS: req.body.Conjoint_MESRS||false,
+                        Nom: req.body.Conjoint.Nom||"",
+                        Nomarco: req.body.Conjoint.Nomarco||"",
+                        prenom: req.body.Conjoint.prenom||"",
+                        prenomarco: req.body.Conjoint.prenomarco||"",
+                        Date_de_naissance: req.body.Conjoint.Date_de_naissance||"",
+                        Willaya_de_naissance: req.body.Conjoint.Willaya_de_naissance||"",
+                        Commune_de_naissance: req.body.Conjoint.Commune_de_naissance||"",
+                        prenom_du_pere: req.body.Conjoint.prenom_du_pere||"",
+                        nom_mere: req.body.Conjoint.nom_mere||"",
+                        prenom_mere: req.body.Conjoint.prenom_mere||"",
+                        Conjoint_MESRS: req.body.Conjoint.Conjoint_MESRS||false,
                         
                     }
                     const Ayant_droit = {
-                        Moujahid: req.body.Moujahid||false,
-                        fils_chahid: req.body.fils_chahid||false,
-                        veuf_chahid: req.body.veuf_chahid||false,
-                        fille_chahid: req.body.fille_chahid||false,
+                        Moujahid: req.body.Ayant_droit.Moujahid||false,
+                        fils_chahid: req.body.Ayant_droit.fils_chahid||false,
+                        veuf_chahid: req.body.Ayant_droit.veuf_chahid||false,
+                        fille_chahid: req.body.Ayant_droit.fille_chahid||false,
                 
                     };
                     const Recours = [];
@@ -476,11 +479,11 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
                     "nb_points": 0};
                     const celib3 = {"nom": "celibataire 35 et plus",
                     "nb_points": 0};
-                    const marie = {"nom": "marié",
+                    const marie = {"nom": "marié/divorce/veuf",
                     "nb_points": 0};
-                    const divors = {"nom": "divorce/veuf",
+                    const enfant = {"nom": "enfant",
                     "nb_points": 0};
-                    const categorie1 =[celib1, celib2, celib3, marie, divors];
+                    const categorie1 =[celib1, celib2, celib3, marie, enfant];
 
                     const grade1 = {"nom": "1_4",
                     "nb_points": 0};
@@ -653,6 +656,7 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
                  update.info_generale.Willaya_de_naissance = req.body.info_generale.Willaya_de_naissance||update.info_generale.Willaya_de_naissance;
                  update.info_generale.Sexe = req.body.info_generale.Sexe||update.info_generale.Sexe;
                  update.info_generale.Email = req.body.info_generale.Email||update.info_generale.Email;
+                 update.info_generale.code_postal = req.body.info_generale.code_postal||update.info_generale.code_postal;
                  update.info_generale.Prenom_du_pere = req.body.info_generale.Prenom_du_pere||update.info_generale.Prenom_du_pere;
                  update.info_generale.Nom_mere = req.body.info_generale.Nom_mere||update.info_generale.Nom_mere;
                  update.info_generale.prenom_mere = req.body.info_generale.prenom_mere||update.info_generale.prenom_mere;

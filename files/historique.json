@@ -572,5 +572,37 @@
         "donnee": "Ajout d'un recours.",
         "___id": "T000010R000073",
         "___s": true
+    },
+    {
+        "email": "test3@esi.dz",
+        "date": "06-06-2021",
+        "heure": "24:35:47",
+        "donnee": "Affectationdes points d'un demandeur .",
+        "___id": "T000010R000074",
+        "___s": true
+    },
+    {
+        "email": "test3@esi.dz",
+        "date": "06-06-2021",
+        "heure": "24:50:30",
+        "donnee": "affichage des points d'un demandeur .",
+        "___id": "T000010R000075",
+        "___s": true
+    },
+    {
+        "email": "test3@esi.dz",
+        "date": "07-06-2021",
+        "heure": "2:28:55",
+        "donnee": "Affectation manuele des points d'un demandeur .",
+        "___id": "T000010R000076",
+        "___s": true
+    },
+    {
+        "email": "test3@esi.dz",
+        "date": "07-06-2021",
+        "heure": "2:30:10",
+        "donnee": "Affectation manuele des points d'un demandeur .",
+        "___id": "T000010R000077",
+        "___s": true
     }
 ]
