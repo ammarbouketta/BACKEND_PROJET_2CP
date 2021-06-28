@@ -1,7 +1,7 @@
 const TAFFY = require('taffy');
 const fs = require("fs");
 const Critere_db = TAFFY();
-
+const dotEnv = require("dotenv");
 var obj;
 fs.readFile(process.env.Critere_file, 'utf8', (err, data) => {
     if (err) throw err;

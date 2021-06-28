@@ -10,20 +10,9 @@ exports.afficher = (req, res,next) => {
 }
 
 exports.ajouter = (email,donnee) => {
-   /* try {
-        const token = req.headers.authorization.split(' ')[1];
-        const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
-        const userId = decodedToken.userId;
-        console.log(userId);
-        if (req.body.userId && req.body.userId !== userId) {
-          throw 'Invalid user ID';
-        } else {
-          next();
-        }
-      } catch {
-       
-      }*/
+
     var obj =user({"email":email}).get();
+    console.log(obj)
     let date_ob = new Date();
     let date1 = ("0" + date_ob.getDate()).slice(-2);
      // current month
@@ -40,7 +29,7 @@ exports.ajouter = (email,donnee) => {
     var heure= hours + ":" + minutes + ":" + seconds;
    historique.insert({
        "email":email,
-       "type_profil":obj.type_profil,
+       "type_profil":user({ "email": email }).select("type_profil")[0],
        "date":date,
        "heure":heure,
        "donnee":donnee,

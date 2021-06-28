@@ -15,15 +15,15 @@
                 "nb_points": 3
             },
             {
-                "nom": "marié",
+                "nom": "marié/divorce/veuf",
                 "nb_points": 4
             },
             {
-                "nom": "divorce/veuf",
+                "nom": "enfant",
                 "nb_points": 2
             }
         ],
-        "___id": "T000008R000002",
+        "___id": "T000010R000002",
         "___s": true
     },
     {
@@ -50,7 +50,7 @@
                 "nb_points": 5
             }
         ],
-        "___id": "T000008R000003",
+        "___id": "T000010R000003",
         "___s": true
     },
     {
@@ -65,7 +65,7 @@
                 "nb_points": 1
             }
         ],
-        "___id": "T000008R000004",
+        "___id": "T000010R000004",
         "___s": true
     },
     {
@@ -76,7 +76,7 @@
                 "nb_points": 2
             }
         ],
-        "___id": "T000008R000005",
+        "___id": "T000010R000005",
         "___s": true
     },
     {
@@ -84,34 +84,34 @@
         "criteres": [
             {
                 "nom": "secretaire_general",
-                "nb_points": 2
+                "nb_points": 0
             },
             {
                 "nom": "sous_directeur",
-                "nb_points": 2
+                "nb_points": 0
             },
             {
                 "nom": "responsable_de_structure",
-                "nb_points": 2
+                "nb_points": 0
             },
             {
                 "nom": "chef_de_service_rectorat",
-                "nb_points": 2
+                "nb_points": 0
             },
             {
                 "nom": "chef_de_bureau",
-                "nb_points": 2
+                "nb_points": 0
             },
             {
                 "nom": "chef_de_service_institut",
-                "nb_points": 2
+                "nb_points": 0
             },
             {
                 "nom": "chef_de_section",
-                "nb_points": 2
+                "nb_points": 0
             }
         ],
-        "___id": "T000008R000006",
+        "___id": "T000010R000006",
         "___s": true
     },
     {
@@ -134,7 +134,7 @@
                 "nb_points": 6
             }
         ],
-        "___id": "T000008R000007",
+        "___id": "T000010R000007",
         "___s": true
     }
 ]

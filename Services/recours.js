@@ -2,13 +2,12 @@ var PizZip = require('pizzip');
 var Docxtemplater = require('docxtemplater');
 const Demandeur = require('../Models/demandeur').Demandeur_db;
 const Recours = require('../Models/recours').Recours_db;
-
 var fs = require('fs');
 var path = require('path');
 const ecrire = require('../Models/demandeur').ecrire;
 const ecrirer = require('../Models/recours').ecrire;
-
 const { ajouter } = require('./historique');
+const jwt = require('jsonwebtoken');
 
 function replaceErrors(key, value) {
     if (value instanceof Error) {
@@ -57,10 +56,10 @@ exports.accuse = (req, res) => {
         };
         if (k == 0) {
             doc.setData({
-                Numero_dossier: obj[i - 1].Recours.Numero_dossier_recours,
+                Numero_dossier: obj[i - 1].Numero_dossier,
                 nom: obj[i - 1].info_generale.nom.toUpperCase() + " " + obj[i - 1].info_generale.prenom.toUpperCase(),
-                matricule: obj[i - 1].info_generale.matricule,
-                motif: req.body.motif || "Champ non spécifié",
+                matricule: obj[i - 1].matricule,
+                motif: obj[i - 1].Recours[obj[i - 1].Recours.length - 1].motif,
                 date: obj[i - 1].Recours[obj[i - 1].Recours.length - 1].date_recours
             });
 
@@ -83,35 +82,35 @@ exports.accuse = (req, res) => {
         };
     });
 };
+
+
 exports.ajout_recours = (req, res, next) => {
     if (Demandeur({ "Numero_dossier": req.body.Numero_dossier }).get().length == 1) {
-        var liste_recours = Demandeur({ "Numero_dossier": req.body.Numero_dossier }).select("Recours")[0];
-        console.log(liste_recours);
-        let date_ob = new Date();
+
+        //var liste_recours = Demandeur({ "Numero_dossier": req.body.Numero_dossier }).select("Recours")[0];
+        let date_ob = new Date(); 
         let date = ("0" + date_ob.getDate()).slice(-2);
         let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
-        var la_date = date + "/" + month + "/" + date_ob.getFullYear() + " - " + date_ob.getHours() + ":" + date_ob.getMinutes() + ":" + date_ob.getSeconds();
-        liste_recours.push({
-            "Numero_dossier_recours":"R_"+req.body.Numero_dossier,
-            "date_recours": la_date,
-            "motif": req.body.motif || "Champ non spécifié"
-        });
-        console.log(liste_recours);
-
-        Demandeur.merge({
-            "Recours": liste_recours
-        },"Recours");
+        var la_date = date + "/" + month + "/" + date_ob.getFullYear() + " - " + (date_ob.getHours()+2) + ":" + date_ob.getMinutes() + ":" + date_ob.getSeconds();
         Recours.insert({
             "nom":Demandeur({ "Numero_dossier": req.body.Numero_dossier }).select("info_generale")[0].nom,
             "prenom":Demandeur({ "Numero_dossier": req.body.Numero_dossier }).select("info_generale")[0].prenom,
             "matricule":Demandeur({ "Numero_dossier": req.body.Numero_dossier }).select("matricule")[0],
-            "Numero_dossier_recours":"R_"+req.body.Numero_dossier,
             "date_recours": la_date,
             "motif": req.body.motif || "Champ non spécifié"
-        });ecrirer();
-        ecrire();
+        });
+        ecrirer();
+        //if (Demandeur({ "Numero_dossier": req.body.Numero_dossier }).select("recours").length===1){
+              Demandeur({"Numero_dossier":req.body.Numero_dossier}).update(
+                {
+                    "Numero_dossier":"R"+req.body.Numero_dossier,
+                } 
+                ); 
+                ecrire();
         
-        var email="test3@esi.dz";
+        const token = req.headers.authorization.split(' ')[1];//recuperer le payload dans la chaine token "le profil"
+        const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+        const email = decodedToken.email;
         var donnee="Ajout d'un recours.";
         ajouter(email,donnee);
         res.status(200).json({ message: ' opp  terminée !' });
@@ -122,6 +121,11 @@ exports.ajout_recours = (req, res, next) => {
 };
 
 exports.afficher = (req, res,next) => {
+    const token = req.headers.authorization.split(' ')[1];//recuperer le payload dans la chaine token "le profil"
+    const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+    const email = decodedToken.email;
+    var donnee="Affichage de la liste des recours.";
+    ajouter(email,donnee);
     res.json(Recours().get());
     next();
 

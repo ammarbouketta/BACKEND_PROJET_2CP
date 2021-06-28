@@ -1,7 +1,7 @@
-var statistique = require('../Models/statistique').Statistique_db;
+//var statistique = require('../Models/statistique').Statistique_db;
 var fs = require('fs');
 var path = require('path');
-var ecrire = require('../Models/statistique').ecrire;
+//var ecrire = require('../Models/statistique').ecrire;
 
 
 exports.get_genre = (req, res, next) => {
@@ -21,7 +21,7 @@ exports.get_genre = (req, res, next) => {
       ecrire();
          pm=(nbm/(nbm+nbf))*100 ;
          pf=(nbf/(nbm+nbf))*100 ;  
-         res.status(201).json({"le pourcentage des hommes est ":pm,"le pourcentage des femmes est ":pf});
+         res.status(201).json({pm,pf});
 }
 
 
