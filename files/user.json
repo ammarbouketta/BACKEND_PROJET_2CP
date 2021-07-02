@@ -40,8 +40,8 @@
         "___s": true
     },
     {
-        "nom": "ferguiaaaa",
-        "prenom": "samy",
+        "nom": "Fergui",
+        "prenom": "Samy",
         "email": "samy@gmail.com",
         "password": "$2b$10$5O./sEMv6cv3EKd.vaJhTeFq5LAAkMEXh0Y1pFKUmGSxu27fFhXyW",
         "type_profil": "administrateur",
@@ -50,11 +50,11 @@
         "___s": true
     },
     {
-        "nom": "HHA",
-        "prenom": "HHA",
-        "email": "D",
-        "password": "$2b$10$LfQx4R8GbqSVJQ8uBo.BQ.uJPB6IKmuqfo.y1w7mxSYI3ddhIEcnG",
-        "type_profil": "administrateur",
+        "nom": "ahmed",
+        "prenom": "mokeddem",
+        "email": "ja_mokeddem@esi.dz",
+        "password": "$2b$10$LTEWj9oiwR6P3KLKgnQAZ.HOsCWo6PorJSvtg2JIYV07bKhdNI1Ma",
+        "type_profil": "valideur",
         "photo_de_profil": "",
         "___id": "T000009R000007",
         "___s": true

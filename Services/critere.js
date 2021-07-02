@@ -87,7 +87,7 @@ const situation_familliale = (id) => {
     obj.nb_point_par_critere[0].criteres[2].nb_points = 0;
     obj.nb_point_par_critere[0].criteres[3].nb_points = 0;
     obj.nb_point_par_critere[0].criteres[4].nb_points = 0;
-    if (obj.info_generale.Situation_familliale === "célibataire") {
+    if (obj.info_generale.Situation_familiale === "celibataire") {
         var age = Number((new Date().getTime() - new Date(obj.info_generale.Date_de_naissance).getTime()) / 31536000000);
         if ((age >= 25) && (age < 30)) {
             obj.nb_point_par_critere[0].criteres[0].nb_points = 1;
@@ -96,7 +96,7 @@ const situation_familliale = (id) => {
         } else if (age >= 35) {
             obj.nb_point_par_critere[0].criteres[2].nb_points = 3;
         }
-    } else if (obj.info_generale.Situation_familliale === "marié" || obj.info_generale.Situation_familliale === "divorcé" || obj.info_generale.Situation_familliale === "veuf") {
+    } else if (obj.info_generale.Situation_familiale === "Marié(e)" || obj.info_generale.Situation_familiale === "Divorcé(e)" || obj.info_generale.Situation_familliale === "veuf(ve)") {
         obj.nb_point_par_critere[0].criteres[3].nb_points = 4;
     };
     switch (obj.info_generale.Nombre_enfants) {
@@ -139,7 +139,7 @@ const Grade = (id) => {
         case "12-15":
             obj.nb_point_par_critere[1].criteres[3].nb_points = 4;
             break;
-        case "16- et plus":
+        case "16  et plus":
             obj.nb_point_par_critere[1].criteres[4].nb_points = 5;
             break;
     };

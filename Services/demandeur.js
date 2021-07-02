@@ -448,7 +448,7 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
                         photo: req.body.photo||"",
                     };
 
-                    const Experiance_professionnelle = {
+                    const Experience_professionnelle = {
                         direction: req.body.direction||"",
                         Etablissement: req.body.Etablissement||"",
                         Grade: req.body.Grade||"",
@@ -482,8 +482,8 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
                      };
                     //const Ayant_droit = req.body.Ayant_droit
                     const Recours = [];
-                    const dossier_complet = req.body.dossier_complet||false;
-                    const valider = true;
+                    const dossier_complet = req.body.dossier_complet;
+                    const valider = false;
                     const beneficiare = false;
 
 
@@ -579,11 +579,11 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
                         "matricule":matricule,
                         "Nombre_de_points":Nombre_de_points,
                         "info_generale": info_generale,
-                        "Experiance_professionnelle": Experiance_professionnelle,
+                        "Experience_professionnelle": Experience_professionnelle,
                         "Conjoint": Conjoint,
                         "Ayant_droit": Ayant_droit,
                         "Recours": Recours,
-                        "criteres" : criteres,
+                        "nb_point_par_critere" : criteres,
                         "dossier_complet" : dossier_complet,
                         "valider":valider,
                         "beneficiare":beneficiare,
@@ -622,7 +622,7 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
                     "Numero_dossier" : demand.Numero_dossier,
                     "Nombre_de_points":demand.Nombre_de_points,
                     "info_generale": demand.info_generale,
-                    "Experiance_professionnelle": demand.Experiance_professionnelle,
+                    "Experience_professionnelle": demand.Experience_professionnelle,
                     "Conjoint": demand.Conjoint,
                     "Ayant_droit": demand.Ayant_droit,
                     "Recours": demand.Recours,
@@ -651,6 +651,14 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
         next();
     }
 
+    exports.liste_demandeurv = (req, res, next) => {
+        var email1="test3@esi.dz";
+        var donnee="Affichage de la liste des demandeurs .";
+        ajouter(email1,donnee);
+        res.json(demandeur({"valider" : true}).get());
+        next();
+    }
+
 
     
     
@@ -663,7 +671,7 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
                  update.info_generale.nomar = req.body.nomar||update.info_generale.nomar;
                  update.info_generale.prenomar = req.body.prenomar||update.info_generale.prenomar;
                  update.info_generale.matricule = req.body.matricule||update.matricule;
-                 update.info_generale.Adresse = req.body.Adresse||update.info_generale.Adresse;
+                 update.info_generale.Adresse = req.body.Adresse;
                  update.info_generale.numero_de_tel = req.body.numero_de_tel||update.info_generale.numero_de_tel;
                  update.info_generale.Date_de_naissance = req.body.Date_de_naissance||update.info_generale.Date_de_naissance;
                  update.info_generale.Commune_de_naissance = req.body.Commune_de_naissance||update.info_generale.Commune_de_naissance;
@@ -701,12 +709,15 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
                  update.Conjoint.Nom_mereco = req.body.Nom_mereco||update.Conjoint.Nom_mereco;
                  update.Conjoint.prenom_mereco = req.body.prenom_mereco||update.Conjoint.prenom_mereco;
                  update.Conjoint.Conjoint_MESRS = req.body.Conjoint_MESRS||update.Conjoint.Conjoint_MESRS;
-
+                 const Ayant_droit = {
+                   
+           
+                }
             //ayant droit
-                 update.Ayant_droit.Moujahid = req.body.Moujahid||update.Ayant_droit.Moujahid;
-                 update.Ayant_droit.fils_chahid = req.body.fils_chahid||update.Ayant_droit.fils_chahid;
-                 update.Ayant_droit.veuf_chahid = req.body.veuf_chahid||update.Ayant_droit.veuf_chahid;
-                 update.Ayant_droit.fille_chahid = req.body.fille_chahid||update.Ayant_droit.fille_chahid;
+                 update.Ayant_droit.Moujahid = req.body.droit.includes("Moudjahid")||false;
+                 update.Ayant_droit.fils_chahid = req.body.droit.includes("Fils de chahid")||false;
+                 update.Ayant_droit.veuf_chahid = req.body.droit.includes("Fille de Chahid")||false;
+                 update.Ayant_droit.fille_chahid = req.body.droit.includes("Veuf de Chahid")||false;
                  
             //recours     
                  update.Recours.motif =req.body.motif||update.Recours.motif;

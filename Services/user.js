@@ -176,3 +176,29 @@ exports.infos_user = (req, res, next) => {
     }
     next();
 };
+
+exports.infos_user2 = (req, res, next) => {
+    const token = req.headers.authorization.split(' ')[1];//recuperer le payload dans la chaine token "le profil"
+    const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+    const email = decodedToken.email;
+
+    if (User({ "email": req.query.email }).get().length === 1) {
+        try {
+            const user = User({ "email": req.query.email }).get()[0];
+            res.status(200).json({
+                "nom" : user.nom,
+                "prenom" : user.prenom,
+                "email": user.email,
+                "type_profil": user.type_profil,
+                //"photo_de_profil": user.photo_de_profil
+            });
+            var donnee="Affichage des informations d'un compte .";
+            ajouter(email,donnee); 
+        } catch (error) { res.status(400).json({ error }); }
+    } else {
+        res.json({
+            "Error": "User n'existe pas "
+        });
+    }
+    next();
+};
