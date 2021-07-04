@@ -3,7 +3,6 @@ const fs = require("fs");
 const Compagne_db = TAFFY();
 const dotEnv = require("dotenv");
 
-
 var obj;
 fs.readFile(process.env.Compagne_file, 'utf8', (err, data) => {
     if (err) throw err;

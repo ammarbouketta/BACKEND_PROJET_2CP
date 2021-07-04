@@ -155,4 +155,3 @@ exports.grade = (req, res, next) => {
           res.status(201).json({entre_1_4,entre_5_9,entre_10_11,entre_12_15,plus_de_16});
        
     }
-   

@@ -3,16 +3,19 @@ var demandeur = require('../Models/demandeur').Demandeur_db;
 var ecrire = require('../Models/critere').ecrire;
 var ecrire2 = require('../Models/demandeur').ecrire;
 const { ajouter } = require('./historique');
-
+/**pour ajouter un nouveau critère à laliste des critère  */
 exports.ajout_critere = (req, res, next) => {
-    if (critere({ "categorie": req.body.categorie }).get().length === 1)
+    /**ajoute du critére avec leur point dans le fichier physique critères  */
+    /**l'utilisateur entre le nom de lacatégorie ou il veut met le nouveau critére */
+    if (critere({ "categorie": req.body.categorie }).get().length === 1)/** si la catégorie exisste*/
     {
         try{
+            /**insertion de ce critére dans cette catégorie  */
             var obj=critere({"categorie":req.body.categorie}).select("criteres")[0];
             obj.push(
                         {
                               "nom":req.body.nom,
-                              "point":req.body.point
+                              "nb_points":req.body.nb_points
                         }
                     );
             const crit = critere.merge(
@@ -21,14 +24,15 @@ exports.ajout_critere = (req, res, next) => {
                             "criteres":obj
                         },"categorie"
                         );
-            ecrire();
+            ecrire();/**pour sauvegarder le  donnée  */
             var email="test3@esi.dz";
             var donnee="Ajout d'une critére ";
             ajouter(email,donnee);
-            demandeur().each(info =>{
+            /**ajout de critére pour chaque demandeur dans le fichier physique demandeurs */
+            demandeur().each(info =>{/**parcourt des deandeurs */
                     for(var i=0;i<info.nb_point_par_critere.length;i++)
                        {  
-                            if(info.nb_point_par_critere[i].categorie===req.body.categorie)
+                            if(info.nb_point_par_critere[i].categorie===req.body.categorie)/**ajout de critére dans lacatégorie qui convient pour un demandeur */
                               {
                                   info.nb_point_par_critere[i].criteres= obj;
                                   ecrire2();
@@ -41,22 +45,22 @@ exports.ajout_critere = (req, res, next) => {
             } catch (error) { res.status(500).json({ error })};
        
     }
-    else 
+    else /**si la catégorie n'existe pas  */
        {
-            const crit = critere.insert(
+            const crit = critere.insert(/**on ajout la catégorie et cette catégorie contient le critére avec leur point */
                         {
                               "categorie" :req.body.categorie,
                               "criteres":
                             [
                                 { 
                                     "nom":req.body.nom,
-                                    "point":req.body.point
+                                    "nb_points":req.body.nb_points
                                 }
                             ]
            
                         });
                         ecrire();
-            demandeur().each(info =>{
+            demandeur().each(info =>{/**on ajout la catégorie pour chaque demandeur */
                 var i=info.nb_point_par_critere.length;
                     info.nb_point_par_critere[i]={
                                       "categorie" :req.body.categorie,
@@ -64,7 +68,7 @@ exports.ajout_critere = (req, res, next) => {
                                     [
                                         { 
                                             "nom":req.body.nom,
-                                            "point":req.body.point
+                                            "nb_points":req.body.nb_points
                                         }
                                     ]
                             }
@@ -80,219 +84,276 @@ exports.ajout_critere = (req, res, next) => {
 }
 
 
-const situation_familliale = (id) => {
-    obj = Demandeur({ "Numero_dossier": id }).get()[0];
-    obj.criteres[0].criteres[0].value = 0;
-    obj.criteres[0].criteres[1].value = 0;
-    obj.criteres[0].criteres[2].value = 0;
-    obj.criteres[0].criteres[3].value = 0;
-    obj.criteres[0].criteres[4].value = 0;
+const situation_familliale = (id) => {/**on initialise tt les points à 0 */
+    obj = demandeur({ "Numero_dossier": id }).get()[0];
+    obj.nb_point_par_critere[0].criteres[0].nb_points = 0;
+    obj.nb_point_par_critere[0].criteres[1].nb_points = 0;
+    obj.nb_point_par_critere[0].criteres[2].nb_points = 0;
+    obj.nb_point_par_critere[0].criteres[3].nb_points = 0;
+    obj.nb_point_par_critere[0].criteres[4].nb_points = 0;
+    /**on récupére le champ situation familiale  */
     if (obj.info_generale.Situation_familliale === "célibataire") {
-        var age = Number((new Date().getTime() - new Date(obj.info_generale.Date_de_naissance).getTime()) / 31536000000);
+        var age = Number((new Date().getTime() - new Date(obj.info_generale.Date_de_naissance).getTime()) / 31536000000);/**pour chaque demandeur o calcule leur age et on affecte les points */
         if ((age >= 25) && (age < 30)) {
-            obj.criteres[0].criteres[0].value = 1;
+            obj.nb_point_par_critere[0].criteres[0].nb_points = 1;
         } else if (age >= 30 && age < 35) {
-            obj.criteres[0].criteres[1].value = 2;
+            obj.nb_point_par_critere[0].criteres[1].nb_points = 2;
         } else if (age >= 35) {
-            obj.criteres[0].criteres[2].value = 3;
+            obj.nb_point_par_critere[0].criteres[2].nb_points = 3;
         }
     } else if (obj.info_generale.Situation_familliale === "marié" || obj.info_generale.Situation_familliale === "divorcé" || obj.info_generale.Situation_familliale === "veuf") {
-        obj.criteres[0].criteres[3].value = 4;
+        obj.nb_point_par_critere[0].criteres[3].nb_points = 4;
     };
     switch (obj.info_generale.Nombre_enfants) {
+        case 0:
+            obj.nb_point_par_critere[0].criteres[4].nb_points = 0;
         case 1:
-            obj.criteres[0].criteres[4].value = 2;
+            obj.nb_point_par_critere[0].criteres[4].nb_points = 2;
             break;
         case 2:
-            obj.criteres[0].criteres[4].value = 4;
+            obj.nb_point_par_critere[0].criteres[4].nb_points = 4;
             break;
         case 3:
-            obj.criteres[0].criteres[4].value = 6;
+            obj.nb_point_par_critere[0].criteres[4].nb_points = 6;
             break;
         case 4:
-            obj.criteres[0].criteres[4].value = 8;
+            obj.nb_point_par_critere[0].criteres[4].nb_points = 8;
             break;
         default:
-            obj.criteres[0].criteres[4].value = 10;
+            obj.nb_point_par_critere[0].criteres[4].nb_points = 10;
     }
-    return objet.criteres[0];
+    return obj.nb_point_par_critere[0];
 };
 const Grade = (id) => {
-    obj = Demandeur({ "Numero_dossier": id }).get()[0];
-    obj.criteres[1].criteres[0].value = 0;
-    obj.criteres[1].criteres[1].value = 0;
-    obj.criteres[1].criteres[2].value = 0;
-    obj.criteres[1].criteres[3].value = 0;
-    obj.criteres[1].criteres[4].value = 0;
+    obj = demandeur({ "Numero_dossier": id }).get()[0];
+    obj.nb_point_par_critere[1].criteres[0].nb_points = 0;
+    obj.nb_point_par_critere[1].criteres[1].nb_points = 0;
+    obj.nb_point_par_critere[1].criteres[2].nb_points = 0;
+    obj.nb_point_par_critere[1].criteres[3].nb_points = 0;
+    obj.nb_point_par_critere[1].criteres[4].nb_points = 0;
     switch (obj.Experience_professionnelle.Grade) {
         case "1-4":
-            obj.criteres[1].criteres[0].value = 1;
+            obj.nb_point_par_critere[1].criteres[0].nb_points = 1;
             break;
         case "5-9":
-            obj.criteres[1].criteres[1].value = 2;
+            obj.nb_point_par_critere[1].criteres[1].nb_points = 2;
             break;
         case "10-11":
-            obj.criteres[1].criteres[2].value = 3;
+            obj.nb_point_par_critere[1].criteres[2].nb_points = 3;
             break;
         case "12-15":
-            obj.criteres[1].criteres[3].value = 4;
+            obj.nb_point_par_critere[1].criteres[3].nb_points = 4;
             break;
         case "16- et plus":
-            obj.criteres[1].criteres[4].value = 5;
+            obj.nb_point_par_critere[1].criteres[4].nb_points = 5;
             break;
     };
-    return obj.criteres[1];
+    return obj.nb_point_par_critere[1];
 };
 const conjoint_mesrs = (id) => {
-    obj = Demandeur({ "Numero_dossier": id }).get()[0];
-    obj.criteres[3].criteres[0].value = 0;
+    obj = demandeur({ "Numero_dossier": id }).get()[0];
+    obj.nb_point_par_critere[3].criteres[0].nb_points = 0;
     if (obj.Conjoint.Conjoint_MESRS) {
-        obj.criteres[3].criteres[0].value = 2;
+        obj.nb_point_par_critere[3].criteres[0].nb_points = 2;
     }
-    return obj.criteres[3];
+    return obj.nb_point_par_critere[3];
 };
 const ayant_droit = (id) => {
-    obj = Demandeur({ "Numero_dossier": id }).get()[0];
-    obj.criteres[5].criteres[0].value = 0;
-    obj.criteres[5].criteres[1].value = 0;
-    obj.criteres[5].criteres[2].value = 0;
-    obj.criteres[5].criteres[3].value = 0;
+    obj = demandeur({ "Numero_dossier": id }).get()[0];
+    obj.nb_point_par_critere[5].criteres[0].nb_points = 0;
+    obj.nb_point_par_critere[5].criteres[1].nb_points = 0;
+    obj.nb_point_par_critere[5].criteres[2].nb_points = 0;
+    obj.nb_point_par_critere[5].criteres[3].nb_points = 0;
     if (obj.Ayant_droit.fils_chahid) {
-        obj.criteres[5].criteres[3].value = 6;
+        obj.nb_point_par_critere[5].criteres[3].nb_points = 6;
     };
     if (obj.Ayant_droit.Moujahid) {
-        obj.criteres[5].criteres[0].value = 6;
+        obj.nb_point_par_critere[5].criteres[0].nb_points = 6;
     };
     if (obj.Ayant_droit.fille_chahid) {
-        obj.criteres[5].criteres[1].value = 6;
+        obj.nb_point_par_critere[5].criteres[1].nb_points = 6;
     };
     if (obj.Ayant_droit.veuf_chahid) {
-        obj.criteres[5].criteres[2].value = 6;
-    };
-    return obj.criteres[5];
+        obj.nb_point_par_critere[5].criteres[2].nb_points = 6;
+    }; 
+
+    return obj.nb_point_par_critere[5];
 };
 const anciennete = (id) => {
-    obj = Demandeur({ "Numero_dossier": id }).get()[0];
-    obj.criteres[2].criteres[0].value = 0;
-    obj.criteres[2].criteres[1].value = 0;
+    obj = demandeur({ "Numero_dossier": id }).get()[0];
+    obj.nb_point_par_critere[2].criteres[0].nb_points = 0;
+    obj.nb_point_par_critere[2].criteres[1].nb_points = 0;
     var anciennetee = Number((new Date(obj.Experience_professionnelle.date_fin_activite).getTime() - new Date(obj.Experience_professionnelle.date_debut_activite).getTime()) / 31536000000);
-    obj.criteres[2].criteres[0].value =  Math.floor(anciennetee)*3;
+    obj.nb_point_par_critere[2].criteres[0].nb_points =  Math.floor(anciennetee)*3;
     if (obj.Experience_professionnelle.Hors_secteur_MERSRS) {
-        var anciennetee = Number((new Date(obj.Experience_professionnelle.date_fin_activite_Mersrs).getTime() - new Date(obj.Experience_professionnelle.date_debut_activite_Mersrs).getTime()) / 31536000000);
+        var anciennetee = Math.floor(Number((new Date(obj.Experience_professionnelle.date_fin_activite_Mersrs).getTime() - new Date(obj.Experience_professionnelle.date_debut_activite_Mersrs).getTime()) / 31536000000));
         switch (anciennetee) {
             case 1:
-                obj.criteres[2].criteres[1].value = 1;
+                obj.nb_point_par_critere[2].criteres[1].nb_points = 1;
                 break;
             case 2:
-                obj.criteres[2].criteres[1].value = 2;
+                obj.nb_point_par_critere[2].criteres[1].nb_points = 2;
                 break;
             case 3:
-                obj.criteres[2].criteres[1].value = 3;
+                obj.nb_point_par_critere[2].criteres[1].nb_points = 3;
                 break;
             case 4:
-                obj.criteres[2].criteres[1].value = 4;
+                obj.nb_point_par_critere[2].criteres[1].nb_points = 4;
                 break;
             default:
-                obj.criteres[2].criteres[1].value = 5;
+                obj.nb_point_par_critere[2].criteres[1].nb_points = 5;
         }
         //hors mesrs
     };
+    return obj.nb_point_par_critere[2];
 
 };
+
 const responsabilites = (id) => {
-    dem = Demandeur({ "Numero_dossier": id }).get()[0];
-    obj=Critere({"categorie": "responsabilités administratives"}).get()[0].criteres;
+    var dem = demandeur({ "Numero_dossier": id }).get()[0];
+    var obj=critere({"categorie": "responsabilités administratives"}).get()[0].criteres;
 obj.forEach(element => {
     if (element.nom==dem.Experience_professionnelle.Responsabilite){
-        element.value=2;
+        element.nb_points=2;
     }else{
-        element.value=0;
+        element.nb_points=0;
     }
 });
 return obj;
 };
 
-const affectation_id = (id) => {
-    obj = Demandeur({ "Numero_dossier": id }).get()[0];
-    Demandeur({ "Numero_dossier": id }).update({
-        "nb_point_par_critere": [{
-                "categorie": "Situation familialle",
-                "criteres": situation_familliale(id)
-            },
-            {
-                "categorie": "Grade",
-                "criteres": Grade(id)
-            },
-            {
-                "categorie": "ancienneté par année",
-                "criteres": ancienneté(id)
-            },
-            {
-                "categorie": "conjoint au MESRS",
-                "criteres": conjoint_mesrs(id)
-            },
-            {
-                "categorie": "responsabilités administratives",
-                "criteres": [{
-                        "nom": "secretaire_general",
-                        "value": 2
-                    },
-                    {
-                        "nom": "sous_directeur",
-                        "value": 2
-                    },
-                    {
-                        "nom": "responsable_de_structure",
-                        "value": 2
-                    },
-                    {
-                        "nom": "chef_de_service_rectorat",
-                        "value": 2
-                    },
-                    {
-                        "nom": "chef_de_bureau",
-                        "value": 2
-                    },
-                    {
-                        "nom": "chef_de_service_institut",
-                        "value": 2
-                    },
-                    {
-                        "nom": "chef_de_section",
-                        "value": 2
-                    }
-                ]
-            },
-            {
-                "categorie": "ayant droit",
-                "criteres": ayant_droit(id)
-            },
-            {
-                "categorie": "ancienneté par année",
-                "criteres":  anciennete(id)
-            },
-            {
-                "categorie": "responsabilités administratives",
-                "criteres": responsabilites(id)
-            }
-        ]
+const affectation_id = (id) => {/**affectation des points authomatique  par demandeur (id) */
+    var obj = demandeur({ "Numero_dossier": id }).get()[0];
+    demandeur({ "Numero_dossier": id }).update({
+        "nb_point_par_critere":
+         [
+                situation_familliale(id),
+                Grade(id),
+                anciennete(id),
+                conjoint_mesrs(id),
+                {
+                    "categorie": "responsabilités administratives",
+                    "criteres":responsabilites(id)
+                } ,
+                ayant_droit(id),
+           
+            
+         ]
     });
-    ecrire();
+    ecrire2();/**sauvegarder les points dans le fichier dmandeur */
 };
 
 const affectation = () => {
-    obj = Demandeur({
-        "Dossier_complet": true,
-        "benificiare": false,
-        "valider":true
-    }).get()[0];
+    /**affectation des point authomatique à tout les demandeurs 
+    qui ont valider et avec dossier complet et non bénéficiare  utilisnt affectation(id)*/
+    var obj = demandeur({
+        "valider": true,
+        "dossier_complet": true,
+        "beneficiare": false
+    }).get();
     obj.forEach(element => {
         affectation_id(element.Numero_dossier);
     });
 };
-const _affectation = (req, res) => {
-    obj = Demandeur({ "Numero_dossier": req.query.Numero_dossier }).select("nb_point_par_critere");
+
+
+
+
+exports.affectation_auth = (req, res, next) => {
+    //affectation();
+    affectation_id(req.query.Numero_dossier)
+    var email="test3@esi.dz";
+              var donnee="Affectation authomatique des points de tous demandeur .";
+              ajouter(email,donnee);
+    res.status(201).json({ message: 'affectation faite!' });   
 }
+
+exports.affectation_auth_demand = (req, res, next) => {
+         if (demandeur({"Numero_dossier":req.body.Numero_dossier}).get().length ===1)
+              {
+       
+                affectation_id(req.body.Numero_dossier)    
+                    var email="test3@esi.dz";
+                    var donnee="Affectationdes des points d'un demandeur .";
+                    ajouter(email,donnee);
+                res.status(200).json({ message: 'point affecter !' });
+
+               } 
+         else 
+              {
+                  res.json({"Error": "le demandeur n'existe pas " });
+              }
+        next();
+    }
+
+    exports.afficher = (req, res, next) => {/**affichage des points d'un demandeur  */
+        if (demandeur({"Numero_dossier":req.body.Numero_dossier}).get().length ===1)
+        {
+            var obj = demandeur({ "Numero_dossier": req.body.Numero_dossier }).get()[0];
+            
+            
+              var email="test3@esi.dz";
+              var donnee="affichage des points d'un demandeur .";
+              ajouter(email,donnee);
+              res.json(obj.nb_point_par_critere);
+
+         } 
+   else 
+        {
+            res.json({"Error": "le demandeur n'existe pas " });
+        }
+  next();
+    }
+    
+    
+    exports.affect_manuel = (req, res, next) => {/** dans le cas ou an a ajouter un nouveau critére on a besoin de l'affectation  authomatique des points pour chaque demandeur */
+    if (demandeur({"Numero_dossier":req.body.Numero_dossier}).get().length ===1)
+        {
+            var existe=false;
+            var obj = demandeur({ "Numero_dossier": req.body.Numero_dossier }).get()[0];
+            for(var i=0;i<obj.nb_point_par_critere.length&&!existe;i++)
+            {
+             
+
+                if (obj.nb_point_par_critere[i].categorie==req.body.categorie)
+                {
+                    for(var j=0;j<obj.nb_point_par_critere[i].criteres.length;j++)
+                       {                            
+                           if(obj.nb_point_par_critere[i].criteres[j].nom==req.body.criteres.nom)
+                           {
+                            obj.nb_point_par_critere[i].criteres[j].nb_points=req.body.criteres.nb_points;
+                            demandeur({ "Numero_dossier":req.body.Numero_dossier  }).update({
+                                "nb_point_par_critere":obj.nb_point_par_critere,
+                                    
+                                 
+                            });
+                            ecrire2();
+                            existe=true;
+                             var email="test3@esi.dz";
+                             var donnee="Affectation manuele des points d'un demandeur .";
+                             ajouter(email,donnee);
+                           }
+                       }
+                }
+            }
+            
+       if (existe==false)
+               {
+                    res.status(200).json({ message: 'critére non existant  !' });
+               } else{res.status(200).json({ message: 'points affectés !' });
+}    
+
+         } 
+   else 
+        {
+            res.json({"Error": "le demandeur n'existe pas " });
+        }
+  next();
+}
+
+
+//c'est une algorithme en plus qui permet de rajouter un critére à le fichier des critère 
+
 /*const _affectation = (req, res) => {
     obj = Demandeur({ "Numero_dossier": req.query.Numero_dossier }).select("nb_point_par_critere");
 }*/

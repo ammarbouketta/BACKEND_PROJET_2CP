@@ -1,8 +1,5 @@
-/* jslint es6 */
 const TAFFY = require('taffy');
 const fs = require("fs");
-const dotEnv = require("dotenv");
-
 const Documents_ad_db = TAFFY();
 
 

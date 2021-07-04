@@ -1,6 +1,5 @@
 const TAFFY = require('taffy');
 const fs = require("fs");
-const dotEnv = require("dotenv");
 const Historique_db = TAFFY();
 
 var obj;

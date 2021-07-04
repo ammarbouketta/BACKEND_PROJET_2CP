@@ -7,6 +7,7 @@ var path = require('path');
 const ecrire = require('../Models/demandeur').ecrire;
 const { ajouter } = require('./historique');
 const ecrireC = require('../Models/classement').ecrire;
+const libre = require('libreoffice-convert');
 
 
 function replaceErrors(key, value)
@@ -38,9 +39,9 @@ function errorHandler(error)
 }
 
 
-exports.etat_actual_demand = (req, res) => {
+exports.etat_actual_demand = (req, res) => {/**pour  afficher le pdf (docx) del'état actual d'un demandeur  */
 
-    var content = fs.readFileSync(path.resolve('./pdf-form', 'AC.docx'), 'binary');
+    var content = fs.readFileSync(path.resolve('./pdf-form', 'etat_actuel_demand.docx'), 'binary');//lecture du fichier modéle de l'etat actuel 
     var zip = new PizZip(content);
     var doc;
     try
@@ -49,11 +50,12 @@ exports.etat_actual_demand = (req, res) => {
     } catch (error){ errorHandler(error);}
 
     var obj;
-    fs.readFile('./files/demandeur.json', 'utf8', function(err, data) {
+    fs.readFile('./files/demandeur.json', 'utf8', function(err, data) {//lecture du fichier demandeur
         if (err) throw err;
         obj = JSON.parse(data);
         var i = 0;
         var k = 1;
+        //recherche demandeur de la liste des demandeurs 
         for (i = 0; i < obj.length && k != 0; i++) 
         {
             if (obj[i].Numero_dossier ===  req.body.num_dossier )
@@ -63,10 +65,10 @@ exports.etat_actual_demand = (req, res) => {
                 }
 
         };
-    if(k==0)
-    {
+    if(k==0)//si trouve
+    {//on remplir le fichier état actual selon les informations  de cedemandeur 
         var moujahid;
-        if(obj[i-1].Ayant_droit.Moujahid===true){moujahid = "X"}
+        if(obj[i-1].Ayant_droit.Moujahid===true){moujahid = "X"}//par exemple si il est moujahid lacase de moujdahid sera cocher 
         else moujahid=" ";
         var fils;
         if(obj[i-1].Ayant_droit.fils_chahid===true){fils = "X"}
@@ -92,8 +94,8 @@ exports.etat_actual_demand = (req, res) => {
         var Conjoint_MESRS;
         if(obj[i-1].Conjoint.Conjoint_MESRS===true){Conjoint_MESRS = "X"}
         else Conjoint_MESRS=" ";
-
-        doc.setData({
+        
+        doc.setData({//récupération des info et les a mets dans les champs qui lescorresponds dans fichiers etat actuel
             Numero_dossier: obj[i - 1].Numero_dossier,
             nom: obj[i-1].info_generale.nom,
             prenom: obj[i-1].info_generale.prenom,
@@ -109,6 +111,7 @@ exports.etat_actual_demand = (req, res) => {
             numero_tel: obj[i-1].info_generale.numero_de_tel,
             Sexe: obj[i-1].info_generale.Sexe,
             Email: obj[i-1].info_generale.Email,
+            code_postal: obj[i-1].info_generale.code_postal,
             Prenom_du_pere: obj[i-1].info_generale.Prenom_du_pere,
             Nom_mere: obj[i-1].info_generale.Nom_mere,
             Prenom_mere: obj[i-1].info_generale.Prenom_mere,
@@ -124,23 +127,23 @@ exports.etat_actual_demand = (req, res) => {
             date_fin_activite_Mersrs: obj[i-1].Experience_professionnelle.date_fin_activite_Mersrs,
             Responsabilite: obj[i-1].Experience_professionnelle.Responsabilite,
             hors_secteur_MESRS: hors_secteur_MERSRS,
-            nom1: obj[i-1].Conjoint.Nom,
-            prenom1: obj[i-1].Conjoint.prenom,
+            nom1: obj[i-1].Conjoint.nomco,
+            prenom1: obj[i-1].Conjoint.prenomco,
             nomar1: obj[i-1].Conjoint.Nomarco,
             prenomar1: obj[i-1].Conjoint.prenomcoar,
-            date_de_naissance1: obj[i-1].Conjoint.Date_de_naissance,
-            Commune_de_naissance2: obj[i-1].Conjoint.Commune_de_naissance,
-            Willaya_de_naissance2: obj[i-1].Conjoint.Willaya_de_naissance,
-            Prenom_du_pere2: obj[i-1].Conjoint.Prenom_du_pere,
-            Nom_mere2: obj[i-1].Conjoint.Nom_mere,
-            Prenom_mere2: obj[i-1].Conjoint.Prenom_mere,
+            date_de_naissance1: obj[i-1].Conjoint.Date_de_naissanceco,
+            Commune_de_naissance2: obj[i-1].Conjoint.Commune_de_naissanceco,
+            Willaya_de_naissance2: obj[i-1].Conjoint.Willaya_de_naissanceco,
+            Prenom_du_pere2: obj[i-1].Conjoint.Prenom_du_pereco,
+            Nom_mere2: obj[i-1].Conjoint.Nom_mereco,
+            Prenom_mere2: obj[i-1].Conjoint.Prenom_mereco,
             Conjoint_MESRS: Conjoint_MESRS,
             Moujahid: moujahid,
             fils_chahid: fils,
             fille_chahid: fille,
             veuf_chahid: veuf,
-            R_num_dossier: obj[i-1].Recours.num_dossier,
-            date_recours: obj[i-1].Recours.date_recours,
+            date_recours: obj[i-1].Recours.date_recours||"/",
+            motif: obj[i-1].Recours.motif||"/",
             valide :valide,
             categorie:obj[i-1].nb_point_par_critere,
            // image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4QIJBywfp3IOswAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAAkUlEQVQY052PMQqDQBREZ1f/d1kUm3SxkeAF/FdIjpOcw2vpKcRWCwsRPMFPsaIQSIoMr5pXDGNUFd9j8TOn7kRW71fvO5HTq6qqtnWtzh20IqE3YXtL0zyKwAROQLQ5l/c9gHjfKK6wMZjADE6s49Dver4/smEAc2CuqgwAYI5jU9NcxhHEy60sni986H9+vwG1yDHfK1jitgAAAABJRU5ErkJggg=="
@@ -156,7 +159,8 @@ exports.etat_actual_demand = (req, res) => {
           }
 
         var buf = doc.getZip().generate({ type: 'nodebuffer' });
-        fs.writeFileSync(path.resolve('./pdf-form', 'ACNEW.docx'), buf);
+        fs.writeFileSync(path.resolve('./pdf-form', 'etat_actuel_demand.docx'), buf);//ecriture des données dans fichier etat actuel
+        
         var email="test3@esi.dz";
         var donnee="Affichage de l'état actuel d'un demandeur qui le numéro de dossier "+obj[i-1].Numero_dossier;
         ajouter(email,donnee);
@@ -171,15 +175,16 @@ exports.etat_actual_demand = (req, res) => {
 }
 
 exports.valider = (req, res,next) => {
+    //on cherche le demandeur dans laliste des demandeurs
    if (demandeur({"Numero_dossier":req.body.Numero_dossier}).get().length ===1)
-    {
-         try{      
+    {//si trouve 
+         try{   //le valideur à le choix de met le champ valider à vrai ou à faux   
                    const demand = demandeur({"Numero_dossier":req.body.Numero_dossier}).update(
                         {
                             "valider":req.body.valider,
                         } 
                         ); 
-                ecrire(); 
+                ecrire(); //sauvegarde
                       
                         var email="test3@esi.dz";
                         var donnee="Validation d'un demandeur . ";
@@ -197,9 +202,10 @@ exports.valider = (req, res,next) => {
    next();
 }
 
-exports.delete = (req, res, next) => {
-    if (demandeur({ "Numero_dossier": req.query.Numero_dossier }).get().length === 1) {
-        demandeur({ "Numero_dossier": req.query.Numero_dossier }).remove();
+exports.delete = (req, res, next) => {//supprimer demandeurs
+    //si le demandeur existe
+    if (demandeur({ "Numero_dossier": req.body.Numero_dossier }).get().length === 1) {
+        demandeur({ "Numero_dossier": req.body.Numero_dossier }).remove();//suprimer 
         ecrire();
         var email="test3@esi.dz";
         var donnee="Suppresion d'un demandeur ";
@@ -210,19 +216,21 @@ exports.delete = (req, res, next) => {
     }
 };
 
-const calcul_value = (id_demandeur) => {
+const calcul_value = (id_demandeur) => {//fonctions qui permet de calculer le total des points de chaque demandeurs 
     if (demandeur({ "Numero_dossier": id_demandeur }).get().length == 1) {
         var s = 0;
+        //on parcourt tous les critéres et onsommesles points des chaque critére
         obj = demandeur({ "Numero_dossier": id_demandeur }).select("nb_point_par_critere")[0];
-        obj.forEach(element => {
+        obj.forEach(element => {        //on parcourt tous les critéres et onsommesles points des chaque critére
             (element.criteres).forEach(c => {
                 s += c.nb_points;
             });
         });
+        //on met le resultat dans le champ nombre de point
         demandeur({ "Numero_dossier": id_demandeur }).update({
             "Nombre_de_points": s
         });
-        ecrire();
+        ecrire();//pour sauvegarder la modification
         var email="test3@esi.dz";
         var donnee="Calcule le nombre de point d'un demandeur .";
         ajouter(email,donnee);
@@ -230,22 +238,26 @@ const calcul_value = (id_demandeur) => {
     }
 };
 exports.afficher = (req, res, next) => {
-    calcul_value(req.body.Numero_dossier);
-    res.json(calcul_value(req.body.Numero_dossier));
+    calcul_value(req.body.Numero_dossier);//pour afficher le nombre de points collecter par tel demandeur
+    //res.json(calcul_value(req.body.Numero_dossier));
+    res.json({ message : 'done'})
 }
 
 
 
 exports.classement = (req, res, next) => {
+    //on ordonne les demandeur qui sont valider ,ont dossier ccomplets, et non bénificiares selon l'ordre decroissante de nombre de points
     obj = demandeur({
         "valider": true,
         "dossier_complet": true,
         "beneficiare": false,
-    }).order("Nombre_de_points desc").get();
+    }).order("Nombre_de_points desc").get();//trie ordre décroissante
     Classement().remove();
     var i = 0;
     obj.forEach(element => {
+        //on sauvegarde tous les demandeurs selon leur l'ordre décroissante  dans le fichier physique classement 
         i++;
+        //chaque ojet dans le fichier classement contient les champs suivant:
         Classement.insert({
             nom: element.info_generale.nom + " " + element.info_generale.prenom,
             num_dossier: element.Numero_dossier,
@@ -264,7 +276,7 @@ exports.classement = (req, res, next) => {
 
 
 exports.classement_pdf = (req, res, next) => {
-    var content = fs.readFileSync(path.resolve('./pdf-form', 'classement.docx'), 'binary');
+    var content = fs.readFileSync(path.resolve('./pdf-form', 'classement_0.docx'), 'binary');//lecture du fichier modéle du classement  
     var zip = new PizZip(content);
     var doc;
     try {
@@ -281,6 +293,7 @@ exports.classement_pdf = (req, res, next) => {
     Classement().remove();
     obj.forEach(element => {
         i++;
+        //remplissage du fichier classemnt selon les informations qui ont dans le fichier classement 
         Classement.insert({
             nom: element.info_generale.nom + " " + element.info_generale.prenom,
             num_dossier: element.Numero_dossier,
@@ -291,7 +304,6 @@ exports.classement_pdf = (req, res, next) => {
     ecrireC();
     if (obj.length != 0) {
 
-        console.log(Classement().get());
         doc.setData({
             "classement": Classement().get()
         });
@@ -301,7 +313,7 @@ exports.classement_pdf = (req, res, next) => {
             errorHandler(error);
         }
         var buf = doc.getZip().generate({ type: 'nodebuffer' });
-        fs.writeFileSync(path.resolve('./pdf-form', 'classement1.docx'), buf);
+        fs.writeFileSync(path.resolve('./pdf-form', 'classement_demand.docx'), buf);
         var email="test3@esi.dz";
         var donnee="Affichage du classement des demandeurs .";
         ajouter(email,donnee);
@@ -313,10 +325,9 @@ exports.classement_pdf = (req, res, next) => {
 
 
  
-exports.accuse_recep = (req, res) => {
+exports.accuse_recep = (req, res) => {//accusée de réception 
     
-    var content = fs
-    .readFileSync(path.resolve('./pdf-form', 'Accuse_de_reception.docx'), 'binary');
+    var content = fs.readFileSync(path.resolve('./pdf-form', 'Accuse_de_reception_0.docx'), 'binary');//lecture du modéle de l'accusée de réception
 
     var zip = new PizZip(content);
     var doc;
@@ -326,7 +337,7 @@ exports.accuse_recep = (req, res) => {
     // Catch compilation errors (errors caused by the compilation of the template : misplaced tags)
     writing.errorHandler(error);
     }
-
+     //remplissage de l'accusée de réception selon les  checkbox qui la fait l'utilisateur
     //checkbox verification
     if (req.body.photo) {ch1 = 'X'} else {ch1 = ''};
     if (req.body.demande_manuscrite) {ch2 = 'X'} else {ch2 = ''};
@@ -340,7 +351,7 @@ exports.accuse_recep = (req, res) => {
     if (req.body.arreté_nomination_MESRS) {ch10 = 'X'} else {ch10 = ''};
     if (req.body.arreté_nomination_conjoint) {ch11 = 'X'} else {ch11 = ''};
     if (req.body.attestation_ayant_droit) {ch12 = 'X'} else {ch12 = ''};
-
+//la date et l'heure de génération 
 let date_ob = new Date();
 let date = ("0" + date_ob.getDate()).slice(-2);
 // current month
@@ -389,11 +400,12 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
 
     var buf = doc.getZip().generate({type: 'nodebuffer'});
     // buf is a nodejs buffer, you can either write it to a file or do anything else with it.
-    fs.writeFileSync(path.resolve('./pdf-form', 'Accuse_de_reception11.docx'), buf);
+    fs.writeFileSync(path.resolve('./pdf-form', 'Accuse_de_reception.docx'), buf);//génération de l'accusée 
 
-    var email="test3@esi.dz";
-    var donnee="Génération de l'accusée de reception d'un demandeur . ";
-    ajouter(email,donnee);
+    fs.writeFileSync(path.resolve('./pdf-form', 'Accuse_de_reception.pdf'), buf);//génération de l'accusée 
+
+    
+
     res.json({ "message": "opp terminer " });
     
 }
@@ -401,17 +413,31 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
 
 
 
-    exports.form_demand = (req, res, next) => {
+    exports.form_demand = (req, res, next) => {//formulaire de saisie des demandeurs 
         
         if (demandeur({ "matricule": req.body.matricule }).get().length === 0) {
+            //si le demandeur existe alors:
              let year;      
                 try {
+
+                    let lastnum = demandeur().last().Numero_dossier;
+                    //génération du numéro de dossier  qui a le format xxx/yyyy 
+                    let n=demandeur().last().Numero_dossier;
+                    lastnum=lastnum.substring(lastnum.length - 4);
+                    n=n.substring(0,4);
+                    var i = Number(n) ;
                     let date_ob = new Date();
                     year = date_ob.getFullYear();
-                    let num=demandeur().get().length+1;
-                    const Numero_dossier = num+"/"+year;
+                    if(lastnum<year||demandeur().get().length==0) i=0000;
+                    i=i+1;
+                    if (i<10) i="000"+i;
+                    if (i>=10&&i<100) i="00"+i;
+                    if (i>=100&&i<1000) i="0"+i;
+                    
+                    const Numero_dossier = i+"/"+year;
                     const matricule= req.body.matricule;
                     const Nombre_de_points= 0;
+                    //la saisie des informations 
                     const info_generale = {
                         nom: req.body.nom||"",
                         prenom: req.body.prenom||"",
@@ -424,6 +450,7 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
                         Willaya_de_naissance: req.body.Wilaya_de_naissance||"",
                         Sexe: req.body.Sexe||"",
                         Email: req.body.Email||"",
+                        code_postal: req.body.code_postal||"",
                         Prenom_du_pere: req.body.Prenom_du_pere||"",
                         Nom_mere: req.body.Nom_mere||"",
                         prenom_mere: req.body.prenom_mere||"",
@@ -440,33 +467,34 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
                         date_fin_activite: req.body.date_fin_activite||"",
                         Hors_secteur_MERSRS:req.body.Hors_secteur_MERSRS||false,
                         date_debut_activite_Mersrs: req.body.date_debut_activite_Mersrs||"",
-                        date_fin_activite_Mersrs: req.date_fin_activite_Mersrs||"",
+                        date_fin_activite_Mersrs: req.body.date_fin_activite_Mersrs||"",
                         Responsabilite: req.body.Responsabilite||"",
                     };
                     const Conjoint = {
-                        Nom: req.body.Nom||"",
+                        nomco: req.body.nomco||"",
                         Nomarco: req.body.Nomarco||"",
-                        prenom: req.body.prenom||"",
+                        prenomco: req.body.prenomco||"",
                         prenomarco: req.body.prenomarco||"",
-                        Date_de_naissance: req.body.Date_de_naissance||"",
-                        Willaya_de_naissance: req.body.Willaya_de_naissance||"",
-                        Commune_de_naissance: req.body.Commune_de_naissance||"",
-                        prenom_du_pere: req.body.prenom_du_pere||"",
-                        nom_mere: req.body.nom_mere||"",
-                        prenom_mere: req.body.prenom_mere||"",
+                        Date_de_naissanceco: req.body.Date_de_naissanceco||"",
+                        Willaya_de_naissanceco: req.body.Willaya_de_naissanceco||"",
+                        Commune_de_naissanceco: req.body.Commune_de_naissanceco||"",
+                        prenom_du_pereco: req.body.prenom_du_pereco||"",
+                        nom_mereco: req.body.nom_mereco||"",
+                        prenom_mereco: req.body.prenom_mereco||"",
                         Conjoint_MESRS: req.body.Conjoint_MESRS||false,
                         
                     }
-                    const Ayant_droit = {
-                        Moujahid: req.body.Moujahid||false,
-                        fils_chahid: req.body.fils_chahid||false,
-                        veuf_chahid: req.body.veuf_chahid||false,
-                        fille_chahid: req.body.fille_chahid||false,
+                     const Ayant_droit = {
+                         Moujahid: req.body.droit.includes("Moudjahid")||false,
+                         fils_chahid: req.body.droit.includes("Fils de chahid")||false,
+                         veuf_chahid: req.body.droit.includes("Fille de Chahid")||false,
+                         fille_chahid: req.body.droit.includes("Veuf de Chahid")||false,
                 
-                    };
+                     };
+                    //const Ayant_droit = req.body.Ayant_droit
                     const Recours = [];
                     const dossier_complet = req.body.dossier_complet||false;
-                    const valider = false;
+                    const valider = true;
                     const beneficiare = false;
 
 
@@ -476,11 +504,11 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
                     "nb_points": 0};
                     const celib3 = {"nom": "celibataire 35 et plus",
                     "nb_points": 0};
-                    const marie = {"nom": "marié",
+                    const marie = {"nom": "marié/divorce/veuf",
                     "nb_points": 0};
-                    const divors = {"nom": "divorce/veuf",
+                    const enfant = {"nom": "enfant",
                     "nb_points": 0};
-                    const categorie1 =[celib1, celib2, celib3, marie, divors];
+                    const categorie1 =[celib1, celib2, celib3, marie, enfant];
 
                     const grade1 = {"nom": "1_4",
                     "nb_points": 0};
@@ -557,11 +585,7 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
                         },
                     ];  
        
-        
- 
-
-
-                         const demand = demandeur.insert({
+                         const demand = demandeur.insert({//insertions d'un demandeurs dans le fichier des deamandeurs 
                         "Numero_dossier" : Numero_dossier,
                         "matricule":matricule,
                         "Nombre_de_points":Nombre_de_points,
@@ -575,14 +599,14 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
                         "valider":valider,
                         "beneficiare":beneficiare,
                     });
-                    ecrire(process.env.Demandeur_file, demandeur().get());
+                    ecrire(process.env.Demandeur_file, demandeur().get());//pour sauvegarder les informations dans lefichier 
                     var email="test3@esi.dz";
                     var donnee="La saisie des informations d'un demandeur . ";
                     ajouter(email,donnee);
-                    res.status(201).json({ message: 'Demandeur ajouté !' });
+                    res.status(201).json({ message: 'Demandeur ajouté !', Numero_dossier: Numero_dossier });
 
                 }
-                    
+ 
                 
                 catch (error) { res.status(500).json({ error })};
         } else {
@@ -596,13 +620,15 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
 
 
     exports.infos_demandeur = (req, res, next) => {
-        if (demandeur({ "Numero_dossier": req.body.Numero_dossier }).get().length === 1) {
+        //console.log(demandeur({ "Numero_dossier": req.query.Numero_dossier }).get()[0])
+        //const Numero_dossier = req.query.Numero_dossier
+        if (demandeur({ "Numero_dossier": req.query.Numero_dossier }).get().length === 1) {
+            //si le demandeur existe alors 
             try {
-                const demand = demandeur({ "Numero_dossier": req.body.Numero_dossier }).get()[0];
-                var email1="test3@esi.dz";
-                var donnee="Affichage des informations d'un demandeur.";
-                ajouter(email1,donnee);
+                const demand = demandeur({ "Numero_dossier": req.query.Numero_dossier }).get()[0];
+                //affichage de toutes les informations 
                 res.status(200).json({
+                    "matricule" : demand.matricule,
                     "Numero_dossier" : demand.Numero_dossier,
                     "Nombre_de_points":demand.Nombre_de_points,
                     "info_generale": demand.info_generale,
@@ -614,7 +640,10 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
                     "dossier_complet" : demand.dossier_complet,
                     "valider":demand.valider,
                     "beneficiare":demand.beneficiare,
-                });
+                    "nb_point_par_critere":demand.nb_point_par_critere,
+                });var email1="test3@esi.dz";
+                var donnee="Affichage des informations d'un demandeur.";
+                ajouter(email1,donnee);
 
             } catch (error) { res.status(400).json({ error }); }
         } else {
@@ -639,77 +668,97 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
     
   exports.update_demandeur = (req, res, next) => {
         demandeur().each(update => {
-            //info general
+            //on parcourt le fichier demandeur 
+            //si le demandeur qu'on veut modifier leur infos existe alors  
             if (update.Numero_dossier===req.body.Numero_dossier) {
-                 update.info_generale.nom = req.body.nom||update.info_generale.nom;
-                 update.info_generale.prenom = req.body.info_generale.prenom||update.info_generale.prenom;
-                 update.info_generale.nomar = req.body.info_generale.nomar||update.info_generale.nomar;
-                 update.info_generale.prenomar = req.body.info_generale.prenomar||update.info_generale.prenomar;
+                            //info general
+                 update.info_generale.nom = req.body.nom||update.info_generale.nom;//par exemple si il veut modifier le nom il envoie une requete pour modifier
+                                                                                   //  si on a pas une requette le demandeur sauvegarde l'ancienne nom
+                 update.info_generale.prenom = req.body.prenom||update.info_generale.prenom;
+                 update.info_generale.nomar = req.body.nomar||update.info_generale.nomar;
+                 update.info_generale.prenomar = req.body.prenomar||update.info_generale.prenomar;
                  update.info_generale.matricule = req.body.matricule||update.matricule;
-                 update.info_generale.Adresse = req.body.info_generale.Adresse||update.info_generale.Adresse;
-                 update.info_generale.numero_de_tel = req.body.info_generale.numero_de_tel||update.info_generale.numero_de_tel;
-                 update.info_generale.Date_de_naissance = req.body.info_generale.Date_de_naissance||update.info_generale.Date_de_naissance;
-                 update.info_generale.Commune_de_naissance = req.body.info_generale.Commune_de_naissance||update.info_generale.Commune_de_naissance;
-                 update.info_generale.Willaya_de_naissance = req.body.info_generale.Willaya_de_naissance||update.info_generale.Willaya_de_naissance;
-                 update.info_generale.Sexe = req.body.info_generale.Sexe||update.info_generale.Sexe;
-                 update.info_generale.Email = req.body.info_generale.Email||update.info_generale.Email;
-                 update.info_generale.Prenom_du_pere = req.body.info_generale.Prenom_du_pere||update.info_generale.Prenom_du_pere;
-                 update.info_generale.Nom_mere = req.body.info_generale.Nom_mere||update.info_generale.Nom_mere;
-                 update.info_generale.prenom_mere = req.body.info_generale.prenom_mere||update.info_generale.prenom_mere;
-                 update.info_generale.Situation_familiale = req.body.info_generale.Situation_familiale||update.info_generale.Situation_familiale;
-                 update.info_generale.Nombre_enfants = req.body.info_generale.Nombre_enfants||update.info_generale.Nombre_enfants;
+                 update.info_generale.Adresse = req.body.Adresse||update.info_generale.Adresse;
+                 update.info_generale.numero_de_tel = req.body.numero_de_tel||update.info_generale.numero_de_tel;
+                 update.info_generale.Date_de_naissance = req.body.Date_de_naissance||update.info_generale.Date_de_naissance;
+                 update.info_generale.Commune_de_naissance = req.body.Commune_de_naissance||update.info_generale.Commune_de_naissance;
+                 update.info_generale.Willaya_de_naissance = req.body.Willaya_de_naissance||update.info_generale.Willaya_de_naissance;
+                 update.info_generale.Sexe = req.body.Sexe||update.info_generale.Sexe;
+                 update.info_generale.Email = req.body.Email||update.info_generale.Email;
+                 update.info_generale.code_postal = req.body.code_postal||update.info_generale.code_postal;
+                 update.info_generale.Prenom_du_pere = req.body.Prenom_du_pere||update.info_generale.Prenom_du_pere;
+                 update.info_generale.Nom_mere = req.body.Nom_mere||update.info_generale.Nom_mere;
+                 update.info_generale.prenom_mere = req.body.prenom_mere||update.info_generale.prenom_mere;
+                 update.info_generale.Situation_familiale = req.body.Situation_familiale||update.info_generale.Situation_familiale;
+                 update.info_generale.Nombre_enfants = req.body.Nombre_enfants||update.info_generale.Nombre_enfants;
                  update.info_generale.Nombre_de_points = req.body.Nombre_de_points||update.Nombre_de_points;
-                 update.info_generale.photo = req.body.info_generale.photo||update.info_generale.photo;
+                 update.info_generale.photo = req.body.photo||update.info_generale.photo;
 
             //exp pro
-                 update.Experience_professionnelle.direction = req.body.Experience_professionnelle.direction||update.Experience_professionnelle.direction;
-                 update.Experience_professionnelle.Etablissement = req.body.Experience_professionnelle.Etablissement||update.Experience_professionnelle.Etablissement;
-                 update.Experience_professionnelle.Grade = req.body.Experience_professionnelle.Grade||update.Experience_professionnelle.Grade;
-                 update.Experience_professionnelle.date_debut_activite = req.body.Experience_professionnelle.date_debut_activite||update.Experience_professionnelle.date_debut_activite;
-                 update.Experience_professionnelle.Hors_secteur_MERSRS = req.body.Experience_professionnelle.Hors_secteur_MERSRS||update.Experience_professionnelle.Hors_secteur_MERSRS;
-                 update.Experience_professionnelle.date_debut_activite_Mersrs = req.body.Experience_professionnelle.date_debut_activite_Mersrs||update.Experience_professionnelle.date_debut_activite_Mersrs;
-                 update.Experience_professionnelle.date_fin_activite_Mersrs = req.body.Experience_professionnelle.date_fin_activite_Mersrs||update.Experience_professionnelle.date_fin_activite_Mersrs;
-                 update.Experience_professionnelle.Responsabilite = req.body.Experience_professionnelle.Responsabilite||update.Experience_professionnelle.Responsabilite;
+                 update.Experience_professionnelle.direction = req.body.direction||update.Experience_professionnelle.direction;
+                 update.Experience_professionnelle.Etablissement = req.body.Etablissement||update.Experience_professionnelle.Etablissement;
+                 update.Experience_professionnelle.Grade = req.body.Grade||update.Experience_professionnelle.Grade;
+                 update.Experience_professionnelle.date_debut_activite = req.body.date_debut_activite||update.Experience_professionnelle.date_debut_activite;
+                 update.Experience_professionnelle.Hors_secteur_MERSRS = req.body.Hors_secteur_MERSRS||update.Experience_professionnelle.Hors_secteur_MERSRS;
+                 update.Experience_professionnelle.date_debut_activite_Mersrs = req.body.date_debut_activite_Mersrs||update.Experience_professionnelle.date_debut_activite_Mersrs;
+                 update.Experience_professionnelle.date_fin_activite_Mersrs = req.body.date_fin_activite_Mersrs||update.Experience_professionnelle.date_fin_activite_Mersrs;
+                 update.Experience_professionnelle.Responsabilite = req.body.Responsabilite||update.Experience_professionnelle.Responsabilite;
            
             //conjoint
-                 update.Conjoint.Nom = req.body.Conjoint.Nom||update.Conjoint.Nom;
-                 update.Conjoint.Nomarco = req.body.Conjoint.Nomarco||update.Conjoint.Nomarco;
-                 update.Conjoint.prenom = req.body.Conjoint.prenom||update.Conjoint.prenom;
-                 update.Conjoint.prenomarco = req.body.Conjoint.prenomarco||update.Conjoint.prenomarco;
-                 update.Conjoint.Date_de_naissance = req.body.Conjoint.Date_de_naissance||update.Conjoint.Date_de_naissance;
-                 update.Conjoint.Commune_de_naissance = req.body.Conjoint.Commune_de_naissance||update.Conjoint.Commune_de_naissance;
-                 update.Conjoint.Willaya_de_naissance = req.body.Conjoint.Willaya_de_naissance||update.Conjoint.Willaya_de_naissance;
-                 update.Conjoint.Prenom_du_pere = req.body.Conjoint.Prenom_du_pere||update.Conjoint.Prenom_du_pere;
-                 update.Conjoint.Nom_mere = req.body.Conjoint.Nom_mere||update.Conjoint.Nom_mere;
-                 update.Conjoint.prenom_mere = req.body.Conjoint.prenom_mere||update.Conjoint.prenom_mere;
-                 update.Conjoint.Conjoint_MESRS = req.body.Conjoint.Conjoint_MESRS||update.Conjoint.Conjoint_MESRS;
+                 update.Conjoint.nomco = req.body.nomco||update.Conjoint.nomco;
+                 update.Conjoint.Nomarco = req.body.Nomarco||update.Conjoint.Nomarco;
+                 update.Conjoint.prenomco = req.body.prenomco||update.Conjoint.prenomco;
+                 update.Conjoint.prenomarco = req.body.prenomarco||update.Conjoint.prenomarco;
+                 update.Conjoint.Date_de_naissanceco = req.body.Date_de_naissanceco||update.Conjoint.Date_de_naissanceco;
+                 update.Conjoint.Commune_de_naissanceco = req.body.Commune_de_naissanceco||update.Conjoint.Commune_de_naissanceco;
+                 update.Conjoint.Willaya_de_naissanceco = req.body.Willaya_de_naissanceco||update.Conjoint.Willaya_de_naissanceco;
+                 update.Conjoint.Prenom_du_pereco = req.body.Prenom_du_pereco||update.Conjoint.Prenom_du_pereco;
+                 update.Conjoint.Nom_mereco = req.body.Nom_mereco||update.Conjoint.Nom_mereco;
+                 update.Conjoint.prenom_mereco = req.body.prenom_mereco||update.Conjoint.prenom_mereco;
+                 update.Conjoint.Conjoint_MESRS = req.body.Conjoint_MESRS||update.Conjoint.Conjoint_MESRS;
 
             //ayant droit
-                 update.Ayant_droit.Moujahid = req.body.Ayant_droit.Moujahid||update.Ayant_droit.Moujahid;
-                 update.Ayant_droit.fils_chahid = req.body.Ayant_droit.fils_chahid||update.Ayant_droit.fils_chahid;
-                 update.Ayant_droit.veuf_chahid = req.body.Ayant_droit.veuf_chahid||update.Ayant_droit.veuf_chahid;
-                 update.Ayant_droit.fille_chahid = req.body.Ayant_droit.fille_chahid||update.Ayant_droit.fille_chahid;
+                 update.Ayant_droit.Moujahid = req.body.Moujahid||update.Ayant_droit.Moujahid;
+                 update.Ayant_droit.fils_chahid = req.body.fils_chahid||update.Ayant_droit.fils_chahid;
+                 update.Ayant_droit.veuf_chahid = req.body.veuf_chahid||update.Ayant_droit.veuf_chahid;
+                 update.Ayant_droit.fille_chahid = req.body.fille_chahid||update.Ayant_droit.fille_chahid;
                  
             //recours     
-                 update.Recours.motif =req.body.Recours.motif||update.Recours.motif;
-                 update.Recours.date_recours =req.body.Recours.date_recours||update.Recours.date_recours;
+                 update.Recours.motif =req.body.motif||update.Recours.motif;
+                 update.Recours.date_recours =req.body.date_recours||update.Recours.date_recours;
 
             //info
                  update.dossier_complet = req.body.dossier_complet||update.dossier_complet;
                  update.valider = req.body.valider||update.valider;
                  update.beneficiare = req.body.beneficiare||update.beneficiare;
               
-                ecrire();
+                ecrire();//pour sauvegarder les modifications 
                 var email1="test3@esi.dz";
                 var donnee="Modification des informations d'un demandeur .";
                 ajouter(email1,donnee);
 
             }
             
-             
+            else { res.json({
+                "Error": "Demandeur n'existe pas "
+            });
+
+            }  
             
         })
+       
         res.json({ "message": "opp terminer " });
 
     }
+
+
+
+    exports.test = (req, res) => {
+        console.log(req)
+        res.json({
+            message : 'done'
+        })
+    }
      
+
+

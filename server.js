@@ -1,34 +1,14 @@
-const app = require("express")();
+const express = require('express')
+const app = express();
 const bodyParser = require("body-parser");
 const dotEnv = require("dotenv");
+var fs = require('fs');
+
 dotEnv.config();
-const fs = require('fs');
-const path = require('path');
+
+app.use("./uploads", express.static("uploads"));
 const cors = require ('cors');
 app.use(cors());
-//const {PDFNet}=require("@pdftron/pdfnet-node")
-
-
-
- //telecharger directement le pdf  
-// app.get('/download', (req, res)=>{
-
-//   var file = fs.createReadStream('./pdf-form/C.pdf');
-// var stat = fs.statSync('./pdf-form/C.pdf');
-// res.setHeader('Content-Length', stat.size);
-// res.setHeader('Content-Type', 'application/pdf');
-// res.setHeader('Content-Disposition', 'attachment; filename=quote.pdf');
-// file.pipe(res);
-// })
-// afficher le pdf sur le browser et puis tu pourrra telecharger ou imprimer
-//  app.get('/download1', (req, res)=>{
-//    var data =fs.readFileSync('./pdf-form/ACNEW.pdf');
-//    res.contentType("application/pdf");
-//    res.send(data);
-  
-  
-//  })
-
 
 app.use(bodyParser.json());
 app.use(
@@ -42,8 +22,15 @@ app.get("/", (req, res) => {
 });
 const userRoutes = require('./routes/user');
 app.use('/user', userRoutes);
+
 const demandeurRoutes = require('./routes/demandeur');
 app.use('/demandeur', demandeurRoutes);
+
+const critereRoutes = require('./routes/critere');
+app.use('/critere', critereRoutes);
+
+const statistiqueRoutes = require('./routes/statistique');
+app.use('/statistique', statistiqueRoutes );
 
 const historiqueRoutes = require('./routes/historique');
 app.use('/historique', historiqueRoutes );
@@ -54,7 +41,32 @@ app.use('/compagne', compagneRoutes );
 const recoursRoutes = require('./routes/recours');
 app.use('/recours', recoursRoutes);
 
-// const documentRoutes = require('./routes/documents_ad');
-// app.use('/doc', documentRoutes);
+const documentRoutes = require('./routes/documents_ad');
+app.use('/doc', documentRoutes);
 
+/*
+app.get('/convertFromOffice',(req,res)=>{
+    const converttopdf =async()=>{
+        const pdfdoc=await PDFNet.PDFDoc.create();
+        await pdfdoc.initSecurityHandler();
+        await PDFNet.Convert.toPdf(pdfdoc,'./pdf-form/ACNEW.docx');
+        pdfdoc.save('./pdf-form/aze.pdf',PDFNet.SDFDoc.SaveOptions.e_linearized);
+    
+    }
+    PDFNet.runWithCleanup(converttopdf).then(()=>{
+    fs.readFile('./pdf-form/aze.pdf',(err,data)=>{
+        if(err){
+            res.statusCode=500;
+            res.end(err);
+        }else{
+            res.setHeader('ContentType','application/pdf');
+            res.end(data);
+
+        };
+    });
+    }).catch(err=>{
+        res.statusCode=500;
+        res.end();
+    });
+});*/
 

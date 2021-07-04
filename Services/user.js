@@ -5,19 +5,23 @@ const ecrire = require('../Models/user').ecrire;
 const { ajouter } = require('./historique');
 
 
-exports.signup = (req, res, next) => {
-    if (User({ "email": req.body.email }).get().length === 0) {
-        bcrypt.hash(req.body.password, 10)
+exports.signup = (req, res, next) => {//créationd'un compte parl'administrateur
+    if (User({ "email": req.body.email }).get().length === 0) {//si l'email n'existe pas 
+        bcrypt.hash(req.body.password, 10)//on fait un hash code pour le mot de passe 
             .then((hash) => {
-                const user = User.insert({
+                const user = User.insert({//on insere dans le fichier physique des utilisateurs les iformation suivants
+                    "nom": req.body.nom,
+                    "prenom": req.body.prenom,
                     "email": req.body.email,
                     "password": hash,
                     "type_profil": req.body.type_profil,
                     "photo_de_profil": req.body.photo_de_profil || ""
                 });
-                ecrire(process.env.User_file, User().get());
-                var email="test3@esi.dz";
-                var donnee="Création d'un compte .";
+                ecrire(process.env.User_file, User().get());//sauvegarde des informations 
+                const token = req.headers.authorization.split(' ')[1];//recuperer le payload dans la chaine token "le profil"
+                const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+                const email = decodedToken.email;//pour gérer l'accées des utilisateurs 
+                var donnee="Création d'un compte par l'admin";
                 ajouter(email,donnee);
                 res.status(201).json({ message: 'Utilisateur créé !' });
             })
@@ -29,25 +33,28 @@ exports.signup = (req, res, next) => {
         });
     }
 }
-exports.lister = (req, res, next) => {
-    var email="test3@esi.dz";
+exports.lister = (req, res, next) => {//permet de lister la liste des utilisateurs
+    console.log(req.headers.authorization);
+    
+    const token = req.headers.authorization.split(' ')[1];//recuperer le payload dans la chaine token "le profil"
+    const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+    const email = decodedToken.email;
     var donnee="Affichage des utilisateurs";
     ajouter(email,donnee);
     res.json(User().get());
     next();
 };
-exports.update_info = (req, res, next) => {
+exports.update_mot_de_passe = (req, res, next) => {//modifier mot de passe 
     if (User({ "email": req.body.email }).get().length === 1) {
+                //si user existe 
         bcrypt.hash(req.body.password, 10)
             .then(hash => {
                 const user = User({ "email": req.body.email }).update({
-                    "password": hash,
-                    "type_profil": req.body.type_profil,
-                    "photo_de_profil": req.body.photo_de_profil,
+                    "password": hash||User({ "email": req.body.email }).select("password")[0],
                 });
                 ecrire(process.env.User_file, User().get());
                 var email1="test3@esi.dz";
-                var donnee="Modification des informations d'un compte .";
+                var donnee="Modification de mot de passe d'un compte .";
                 ajouter(email1,donnee);
                 res.status(200).json({ message: 'Infos modifiées !' });
                 next();
@@ -63,31 +70,53 @@ exports.update_info = (req, res, next) => {
         next();
     }
 };
-exports.login = (req, res, next) => {
+
+exports.update_info = (req, res, next) => {//modifier infos d'un utilisateurs  utilisateur
     if (User({ "email": req.body.email }).get().length === 1) {
+        //si user existe 
+      
+                const user = User({ "email": req.body.email }).update({//on modifie les informations qu'on veut sinon ca reste les mm informationsancienne sans etre modifier 
+                    "nom": req.body.nom||User({ "email": req.body.email }).select("nom")[0],
+                    "prenom": req.body.prenom||User({ "email": req.body.email }).select("prenom")[0],
+                    "type_profil":User({ "email": req.body.email }).select("type_profil")[0],
+                    "photo_de_profil": req.body.photo_de_profil||User({ "email": req.body.email }).select("photo_de_profil")[0],
+                });
+                ecrire(process.env.User_file, User().get());//sauvegarder les modifications 
+                const token = req.headers.authorization.split(' ')[1];//recuperer le payload dans la chaine token "le profil"
+                const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+                const email = decodedToken.email;
+                var donnee="Modification des informations d'un compte .";
+                ajouter(email,donnee);
+                res.status(200).json({ message: 'Infos modifiées !' });       
+    } else {
+        res.status(500).json({
+            "Error": "User n'existe pas "
+        });
+        next();
+    }
+};
+
+
+exports.login = (req, res, next) => {
+    if (User({ "email": req.body.email,"type_profil":req.body.type_profil }).get().length === 1) {
         bcrypt.compare(req.body.password, User({ "email": req.body.email }).select('password')[0]).then(
                 (valid) => {
                     if (!valid) {
-                        res.status(401).json({
-                            "message": 'Mot de passe incorrect!'
+                        return res.status(401).json({
+                            'Error': 'Mot de passe incorrect!'
                         });
                     }
                     //mot de passe correcte, on genere donc notre token a base de profil de l'utilisateur
-                    //var email1=req.body.email;
-                    //var donnee="L'utilisateur connecté(e).";
-                    //ajouter(email1,donnee);
+                    var email1=req.body.email;
+                    var donnee="L'utilisateur connecté(e).";
+                    ajouter(email1,donnee);
                     res.status(200).json({
                         profil: User({ "email": req.body.email }).select('type_profil')[0],
                         token: jwt.sign({ profil: User({ "email": req.body.email }).select('type_profil')[0],
                     email : req.body.email },
                             'RANDOM_TOKEN_SECRET', { expiresIn: '24h' }
                         )
-                    
-                        
-                        //profil: User({ "email": req.body.email }).select('type_profil')[0],
-                        //     'token' : 
                     });
-                    //localStorage.setItem('token',"rrrr")
                   
                 })
             .catch(err => {
@@ -98,8 +127,8 @@ exports.login = (req, res, next) => {
                 next();
             });
     } else {
-        res.status(401).json({
-            "message": "User n'existe pas "
+        res.status(400).json({
+            "Error": "User n'existe pas "
         });
         next();
     }
@@ -111,9 +140,11 @@ exports.delete_user = (req, res, next) => {
             //verifier si c un admin 
             const user = User({ "email": req.body.email }).remove();
             ecrire(process.env.User_file, User().get());
-            var email1="test3@esi.dz";
-            var donnee="Suppression d'une compte .";
-            ajouter(email1,donnee);
+            const token = req.headers.authorization.split(' ')[1];//recuperer le payload dans la chaine token "le profil"
+            const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+            const email = decodedToken.email;
+            var donnee="Suppression d'une compte.";
+            ajouter(email,donnee);
             res.status(200).json({ message: 'user supprimé !' })
         } catch (error) { res.status(400).json({ error }) };
     } else {
@@ -124,17 +155,21 @@ exports.delete_user = (req, res, next) => {
     next();
 };
 exports.infos_user = (req, res, next) => {
-    if (User({ "email": req.body.email }).get().length === 1) {
+    const token = req.headers.authorization.split(' ')[1];//recuperer le payload dans la chaine token "le profil"
+    const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+    const email = decodedToken.email;
+    if (User({ "email": email }).get().length === 1) {
         try {
-            const user = User({ "email": req.body.email }).get()[0];
+            const user = User({ "email": email }).get()[0];
             res.status(200).json({
+                "nom" : user.nom,
+                "prenom" : user.prenom,
                 "email": user.email,
                 "type_profil": user.type_profil,
-                "photo_de_profil": user.photo_de_profil
+                //"photo_de_profil": user.photo_de_profil
             });
-            var email1="test3@esi.dz";
             var donnee="Affichage des informations d'un compte .";
-            ajouter(email1,donnee); 
+            ajouter(email,donnee); 
         } catch (error) { res.status(400).json({ error }); }
     } else {
         res.json({
