@@ -67,9 +67,11 @@ exports.list_doc = (req, res, next) => {
 }
 
 exports.click_file = (req, res, next) => {
-    //console.log(req.query.file)
-    //var file = req.query.file;
-    const path = './uploads/2063-CP143.pdf'
+    console.log(req.query.file)
+
+    var file = req.query.file;
+    const path = './uploads/' + file
+    console.log(path)
 
         res.contentType("application/pdf");
         fs.createReadStream(path).pipe(res)

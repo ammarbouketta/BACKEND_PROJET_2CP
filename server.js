@@ -5,7 +5,7 @@ const dotEnv = require("dotenv");
 dotEnv.config();
 
 
-app.use("./uploads", express.static("uploads"));
+app.use( express.static("C:/backend-projet-2CP/uploads"));
 const cors = require ('cors');
 app.use(cors());
 

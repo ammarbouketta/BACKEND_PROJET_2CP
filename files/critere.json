@@ -83,31 +83,31 @@
         "categorie": "responsabilités administratives",
         "criteres": [
             {
-                "nom": "secretaire_general",
+                "nom": "Secretaire general",
                 "nb_points": 0
             },
             {
-                "nom": "sous_directeur",
+                "nom": "Sous-directeur",
                 "nb_points": 0
             },
             {
-                "nom": "responsable_de_structure",
+                "nom": "Responsable de structure",
                 "nb_points": 0
             },
             {
-                "nom": "chef_de_service_rectorat",
+                "nom": "Chef de service rectorat",
                 "nb_points": 0
             },
             {
-                "nom": "chef_de_bureau",
+                "nom": "Chef de Bureau",
                 "nb_points": 0
             },
             {
-                "nom": "chef_de_service_institut",
+                "nom": "Chef de service institut",
                 "nb_points": 0
             },
             {
-                "nom": "chef_de_section",
+                "nom": "Chef de section",
                 "nb_points": 0
             }
         ],

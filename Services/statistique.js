@@ -1,7 +1,7 @@
-//var statistique = require('../Models/statistique').Statistique_db;
+var statistique = require('../Models/demandeur').Demandeur_db;
 var fs = require('fs');
 var path = require('path');
-//var ecrire = require('../Models/statistique').ecrire;
+// var ecrire = require('../Models/statistique').ecrire;
 
 
 exports.get_genre = (req, res, next) => {
@@ -9,7 +9,7 @@ exports.get_genre = (req, res, next) => {
     var nbf=0,pf=0;
         statistique().each(info => 
             {
-                if (info.info_generale.Sexe=="masculin")
+                if (info.info_generale.Sexe=="Homme")
                    {
                        nbm=nbm+1;
                    }
@@ -18,10 +18,15 @@ exports.get_genre = (req, res, next) => {
                       nbf=nbf+1;
                    }
             });  
-      ecrire();
+            console.log(nbf)
+      //ecrire();
          pm=(nbm/(nbm+nbf))*100 ;
          pf=(nbf/(nbm+nbf))*100 ;  
-         res.status(201).json({pm,pf});
+         
+         
+         res.status(201).json([pm,pf]);
+        
+        
 }
 
 
@@ -49,7 +54,7 @@ exports.stat_dossier = (req, res, next) => {
                     {
                        non_benific=non_benific+1;
                     }
-                if(info.dossier_complet=true)
+                if(info.dossier_complet==true)
                     {
                        dossier_complet=dossier_complet+1;
                     }
@@ -65,7 +70,7 @@ exports.stat_dossier = (req, res, next) => {
             console.log("nombre des dossiers bénéficiare est :",+benific); 
             console.log("nombre des dossiers non bénéficiare est :",+non_benific); 
  
-      res.status(201).json({dossier_complet,dossier_incomplet,valider,non_valider,benific,non_benific});
+      res.status(201).json([dossier_complet,dossier_incomplet,valider,non_valider,benific,non_benific]);
 }
 
 
@@ -90,7 +95,7 @@ exports.Age = (req, res, next) => {
             console.log(entre_55_70);
             console.log(plus_70);
 
-        res.status(201).json({entre_18_25,entre_25_40,entre_40_55,entre_55_70,plus_70});
+        res.status(201).json([entre_18_25,entre_25_40,entre_40_55,entre_55_70,plus_70]);
         return ;
     }
 
@@ -122,7 +127,7 @@ exports.situation_familiale = (req, res, next) => {
                 console.log("nombre des mariés est :",+marie); 
                 console.log("nombre des divorces est :",+divorce); 
             
-                res.status(201).json({celebataire,veuf,marie,divorce});
+                res.status(201).json([celebataire,veuf,marie,divorce]);
                
     }
     
@@ -152,7 +157,7 @@ exports.grade = (req, res, next) => {
             console.log("nombre des demandeurs qui on une grade entre_12_15 est :",+entre_12_15);
             console.log("nombre des demandeurs qui on une grade plus_de_16 est :",+plus_de_16);
 
-          res.status(201).json({entre_1_4,entre_5_9,entre_10_11,entre_12_15,plus_de_16});
+          res.status(201).json([entre_1_4,entre_5_9,entre_10_11,entre_12_15,plus_de_16]);
        
     }
    

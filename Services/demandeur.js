@@ -8,6 +8,8 @@ const ecrire = require('../Models/demandeur').ecrire;
 const { ajouter } = require('./historique');
 const ecrireC = require('../Models/classement').ecrire;
 
+// const { PDFNet } = require('@pdftron/pdfnet-node')
+
 
 function replaceErrors(key, value)
 {
@@ -39,7 +41,7 @@ function errorHandler(error)
 
 
 exports.etat_actual_demand = (req, res) => {
-
+    console.log(req.body.Numero_dossier)
     var content = fs.readFileSync(path.resolve('./pdf-form', 'AC.docx'), 'binary');
     var zip = new PizZip(content);
     var doc;
@@ -56,7 +58,7 @@ exports.etat_actual_demand = (req, res) => {
         var k = 1;
         for (i = 0; i < obj.length && k != 0; i++) 
         {
-            if (obj[i].Numero_dossier ===  req.body.num_dossier )
+            if (obj[i].Numero_dossier ===  req.body.Numero_dossier )
                 { 
                   
                    k = 0; 
@@ -220,6 +222,7 @@ const calcul_value = (id_demandeur) => {
                 s += c.nb_points;
             });
         });
+        console.log(s)
         demandeur({ "Numero_dossier": id_demandeur }).update({
             "Nombre_de_points": s
         });
@@ -261,6 +264,8 @@ exports.classement = (req, res, next) => {
     ajouter(email,donnee);
     res.json(Classement().get());
 };
+
+
 
 
 
@@ -311,6 +316,8 @@ exports.classement_pdf = (req, res, next) => {
     } else {
         res.json({ "message": "demandeur non existant " });
     };
+
+  
 };
 
 
@@ -362,7 +369,7 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
     doc.setData({
     //remplir le formulaire avec les données venu de front
     Matricule: req.body.matricule,
-    fullname : req.body.fullname,
+    fullname : req.body.nom + ' ' + req.body.prenom,
     ch1 : ch1,
     ch2 : ch2,
     ch3 : ch3,
@@ -442,7 +449,7 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
                         code_postal: req.body.code_postal||"",
                         Prenom_du_pere: req.body.Prenom_du_pere||"",
                         Nom_mere: req.body.Nom_mere||"",
-                        prenom_mere: req.body.prenom_mere||"",
+                        Prenom_mere: req.body.Prenom_mere||"",
                         Situation_familiale: req.body.Situation_familiale||"",
                         Nombre_enfants: req.body.Nombre_enfants||"",
                         photo: req.body.photo||"",
@@ -521,19 +528,19 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
                     "nb_points": 0};
                     const categorie4 = [conjoint1];
 
-                    const respo1 = {"nom": "secretaire_general",
+                    const respo1 = {"nom": "Secretaire general",
                     "nb_points": 0};
-                    const respo2 = {"nom": "sous_directeur",
+                    const respo2 = {"nom": "Sous-directeur",
                     "nb_points": 0};
-                    const respo3 = {"nom": "responsable_de_structure",
+                    const respo3 = {"nom": "Responsable de structure",
                     "nb_points": 0};
-                    const respo4 = {"nom": "chef_de_service_rectorat",
+                    const respo4 = {"nom": "Chef de service rectorat",
                     "nb_points": 0};
-                    const respo5 = {"nom": "chef_de_bureau",
+                    const respo5 = {"nom": "Chef de Bureau",
                     "nb_points": 0};
-                    const respo6 = {"nom": "chef_de_service_institut",
+                    const respo6 = {"nom": "Chef de service institut",
                     "nb_points": 0};
-                    const respo7 = {"nom": "chef_de_section",
+                    const respo7 = {"nom": "Chef de section",
                     "nb_points": 0};
                     const categorie5 = [respo1, respo2, respo3, respo4, respo5, respo6, respo7];
 
@@ -569,7 +576,7 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
                          "criteres" : categorie5,
                         },
                         {
-                         "categorie": "Grade",
+                         "categorie": "Ayant_droits",
                          "criteres": categorie6,
                         },
                     ];  
@@ -671,7 +678,7 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
                  update.info_generale.nomar = req.body.nomar||update.info_generale.nomar;
                  update.info_generale.prenomar = req.body.prenomar||update.info_generale.prenomar;
                  update.info_generale.matricule = req.body.matricule||update.matricule;
-                 update.info_generale.Adresse = req.body.Adresse;
+                 update.info_generale.Adresse = req.body.Adresse ||update.Adresse;
                  update.info_generale.numero_de_tel = req.body.numero_de_tel||update.info_generale.numero_de_tel;
                  update.info_generale.Date_de_naissance = req.body.Date_de_naissance||update.info_generale.Date_de_naissance;
                  update.info_generale.Commune_de_naissance = req.body.Commune_de_naissance||update.info_generale.Commune_de_naissance;
@@ -681,7 +688,7 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
                  update.info_generale.code_postal = req.body.code_postal||update.info_generale.code_postal;
                  update.info_generale.Prenom_du_pere = req.body.Prenom_du_pere||update.info_generale.Prenom_du_pere;
                  update.info_generale.Nom_mere = req.body.Nom_mere||update.info_generale.Nom_mere;
-                 update.info_generale.prenom_mere = req.body.prenom_mere||update.info_generale.prenom_mere;
+                 update.info_generale.Prenom_mere = req.body.Prenom_mere||update.info_generale.Prenom_mere;
                  update.info_generale.Situation_familiale = req.body.Situation_familiale||update.info_generale.Situation_familiale;
                  update.info_generale.Nombre_enfants = req.body.Nombre_enfants||update.info_generale.Nombre_enfants;
                  update.info_generale.Nombre_de_points = req.body.Nombre_de_points||update.Nombre_de_points;

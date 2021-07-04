@@ -77,7 +77,8 @@ exports.update_info = (req, res, next) => {
                     "nom": req.body.nom||User({ "email": req.body.email }).select("nom")[0],
                     "prenom": req.body.prenom||User({ "email": req.body.email }).select("prenom")[0],
                     "type_profil":User({ "email": req.body.email }).select("type_profil")[0],
-                    "photo_de_profil": req.body.photo_de_profil||User({ "email": req.body.email }).select("photo_de_profil")[0],
+                    // "photo_de_profil": req.body.photo_de_profil||User({ "email": req.body.email }).select("photo_de_profil")[0],
+                    "email": req.body.email||User({ "email": req.body.email }).select("email")[0],
                 });
                 ecrire(process.env.User_file, User().get());
                 const token = req.headers.authorization.split(' ')[1];//recuperer le payload dans la chaine token "le profil"

@@ -204,15 +204,17 @@ const anciennete = (id) => {
 
 };
 
+
 const responsabilites = (id) => {
     var dem = demandeur({ "Numero_dossier": id }).get()[0];
     var obj=critere({"categorie": "responsabilités administratives"}).get()[0].criteres;
 obj.forEach(element => {
     if (element.nom==dem.Experience_professionnelle.Responsabilite){
         element.nb_points=2;
-    }else{
-        element.nb_points=0;
     }
+    // }else{
+    //     element.nb_points=0;
+    // }
 });
 return obj;
 };
@@ -254,7 +256,7 @@ const affectation = () => {
 
 exports.affectation_auth = (req, res, next) => {
     //affectation();
-    affectation_id(req.query.Numero_dossier)
+    affectation_id(req.query.Numero_dossier + "erer")
     var email="test3@esi.dz";
               var donnee="Affectation authomatique des points de tous demandeur .";
               ajouter(email,donnee);

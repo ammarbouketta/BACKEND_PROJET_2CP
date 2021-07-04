@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const DemandeurCtrl = require('../Services/demandeur');
 
-router.get('/docx', DemandeurCtrl.etat_actual_demand);
+router.post('/docx', DemandeurCtrl.etat_actual_demand);
 
 router.post('/valide', DemandeurCtrl.valider);
 
@@ -12,9 +12,9 @@ router.post('/afficher', DemandeurCtrl.afficher);
 
 router.get("/classement", DemandeurCtrl.classement);
 
-router.get("/classement/pdf", DemandeurCtrl.classement_pdf);
+router.post("/classement/pdf", DemandeurCtrl.classement_pdf);
 
-router.get('/accuse', DemandeurCtrl.accuse_recep);
+router.post('/accuse', DemandeurCtrl.accuse_recep);
 
 router.post('/form', DemandeurCtrl.form_demand);
 
