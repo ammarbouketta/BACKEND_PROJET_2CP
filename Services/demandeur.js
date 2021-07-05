@@ -417,15 +417,19 @@ const date_heure =date + "-" + month + "-" + year + " " + hours + ":" + minutes 
              let year;      
                 try {
 
-                    let lastnum = demandeur().last().Numero_dossier;
-                    let n=demandeur().last().Numero_dossier;
-                    lastnum=lastnum.substring(lastnum.length - 4);
-                    n=n.substring(0,4);
+                   
                     // //console.log(n);
-                    var i = Number(n) ;
+                    
                     let date_ob = new Date();
                     year = date_ob.getFullYear();
-                    if(lastnum<year||demandeur().get().length==0) i=0000;
+                    if(demandeur().get().length==0) i=0000;
+                    else {
+                        let lastnum = demandeur().last().Numero_dossier;
+                        let n=demandeur().last().Numero_dossier;
+                        lastnum=lastnum.substring(lastnum.length - 4);
+                        n=n.substring(0,4);
+                        var i = Number(n) ;
+                    }
                     i=i+1;
                     if (i<10) i="000"+i;
                     if (i>=10&&i<100) i="00"+i;

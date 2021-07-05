@@ -71,8 +71,10 @@ exports.accuse = (req, res) => {
 
             var buf = doc.getZip().generate({ type: 'nodebuffer' });
             fs.writeFileSync(path.resolve('./pdf-form', 'Accusé_Reception1.docx'), buf);
-            var email="test3@esi.dz";
-            var donnee="Génération de l'accusée de reception du recours d'un demandeur . ";
+            const token = req.headers.authorization.split(' ')[1];//recuperer le payload dans la chaine token "le profil"
+            const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+            const email = decodedToken.email;
+            var donnee="Génération de l'accusée de reception du recours d'un demandeur. ";
             ajouter(email,donnee);
             //res.json({ "message": "opp terminée" });
             //cette instruction permet d'envoyer l'accusé de reception au navigateur

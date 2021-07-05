@@ -7,7 +7,7 @@ module.exports = (req, res ,next) => {
     const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
     const profil = decodedToken.profil;
     
-    if ('administrateur' !== profil) {
+    if ('valideur' !== profil) {
       //throw 'acces denied';
       //res.status(201).json({ message: 'OO' });
     } else {

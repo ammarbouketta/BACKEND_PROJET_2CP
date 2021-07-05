@@ -17,7 +17,7 @@ router.post('/update_passe_word/', userCtrl.update_mot_de_passe);
 
 router.post('/login', userCtrl.login);
 
-router.delete('/delete',userCtrl.delete_user);
+router.delete('/delete',auth, userCtrl.delete_user);
 
 
 module.exports = router;
