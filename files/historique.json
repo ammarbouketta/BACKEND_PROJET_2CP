@@ -462,5 +462,48 @@
         "donnee": "Affichage de la liste des demandeurs .",
         "___id": "T000009R000054",
         "___s": true
+    },
+    {
+        "email": "samy@gmail.com",
+        "type_profil": "administrateur",
+        "date": "05-07-2021",
+        "heure": "20:56:47",
+        "donnee": "L'utilisateur connecté(e).",
+        "___id": "T000009R000055",
+        "___s": true
+    },
+    {
+        "email": "samy@gmail.com",
+        "type_profil": "administrateur",
+        "date": "05-07-2021",
+        "heure": "20:56:48",
+        "donnee": "Affichage des informations d'un compte .",
+        "___id": "T000009R000056",
+        "___s": true
+    },
+    {
+        "email": "samy@gmail.com",
+        "type_profil": "administrateur",
+        "date": "05-07-2021",
+        "heure": "20:56:59",
+        "donnee": "Affichage des informations d'un compte .",
+        "___id": "T000009R000057",
+        "___s": true
+    },
+    {
+        "email": "test3@esi.dz",
+        "date": "05-07-2021",
+        "heure": "20:56:59",
+        "donnee": "Affichage de la liste des demandeurs .",
+        "___id": "T000009R000058",
+        "___s": true
+    },
+    {
+        "email": "test3@esi.dz",
+        "date": "05-07-2021",
+        "heure": "20:57:23",
+        "donnee": "Affichage de l'état actuel d'un demandeur qui le numéro de dossier 0001/2021",
+        "___id": "T000009R000059",
+        "___s": true
     }
 ]
