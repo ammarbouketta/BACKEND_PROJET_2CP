@@ -10,10 +10,13 @@ router.get('/afficher', userCtrl.lister);
 router.get('/infos_user',userCtrl.infos_user);
 
 router.post('/update', userCtrl.update_info);
+router.get('/infos_user2',userCtrl.infos_user2);
+
+
+router.post('/login', userCtrl.login);
 
 router.post('/update_passe_word/', userCtrl.update_mot_de_passe);
 
-router.post('/login', userCtrl.login);
 
 router.delete('/delete',userCtrl.delete_user);
 

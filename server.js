@@ -2,11 +2,11 @@ const express = require('express')
 const app = express();
 const bodyParser = require("body-parser");
 const dotEnv = require("dotenv");
-var fs = require('fs');
-
 dotEnv.config();
 
-app.use("./uploads", express.static("uploads"));
+
+app.use( express.static("C:/Users/dell/backend-projet-2CP/uploads"));
+app.use( express.static("./pdf-form"));
 const cors = require ('cors');
 app.use(cors());
 
@@ -44,24 +44,25 @@ app.use('/recours', recoursRoutes);
 const documentRoutes = require('./routes/documents_ad');
 app.use('/doc', documentRoutes);
 
-/*
-app.get('/convertFromOffice',(req,res)=>{
+/*app.get('/convertFromOffice',(req,res)=>{
+    const {filename} =req.query;
+    const input = path.resolve(__dirname,'./pdf-form/ACNEW.docx');
+    const output = path.resolve(__dirname,'./pdf-form/aze.pdf');
     const converttopdf =async()=>{
         const pdfdoc=await PDFNet.PDFDoc.create();
         await pdfdoc.initSecurityHandler();
-        await PDFNet.Convert.toPdf(pdfdoc,'./pdf-form/ACNEW.docx');
-        pdfdoc.save('./pdf-form/aze.pdf',PDFNet.SDFDoc.SaveOptions.e_linearized);
+        await PDFNet.Convert.toPdf(pdfdoc,input);
+        pdfdoc.save(output,PDFNet.SDFDoc.SaveOptions.e_linearized);
     
     }
     PDFNet.runWithCleanup(converttopdf).then(()=>{
-    fs.readFile('./pdf-form/aze.pdf',(err,data)=>{
+    fs.readFile(output,(err,data)=>{
         if(err){
             res.statusCode=500;
             res.end(err);
         }else{
             res.setHeader('ContentType','application/pdf');
             res.end(data);
-
         };
     });
     }).catch(err=>{

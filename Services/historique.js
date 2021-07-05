@@ -3,17 +3,16 @@ var user = require('../Models/user').User_db;
 var ecrire = require('../Models/historique').ecrire;
 
 
-exports.afficher = (req, res,next) => {//permet d'afficher l'historique de l'utilisation
+exports.afficher = (req, res,next) => {
     res.json(historique().get());
     next();
 
 }
 
-exports.ajouter = (email,donnee) => {//qui permet d'ajouter un historique avec leur date et heure et action fait et qui la fait(utilisateur)
+exports.ajouter = (email,donnee) => {
 
     var obj =user({"email":email}).get();
     console.log(obj)
-    //pour la date actuel
     let date_ob = new Date();
     let date1 = ("0" + date_ob.getDate()).slice(-2);
      // current month
@@ -35,5 +34,5 @@ exports.ajouter = (email,donnee) => {//qui permet d'ajouter un historique avec l
        "heure":heure,
        "donnee":donnee,
     });
-   ecrire();//ecrire dans le fichier physique historique
+   ecrire();
 }

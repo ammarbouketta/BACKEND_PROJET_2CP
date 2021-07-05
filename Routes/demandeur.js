@@ -21,6 +21,7 @@ router.post('/form', DemandeurCtrl.form_demand);
 router.get('/info', DemandeurCtrl.infos_demandeur);
 
 router.get('/all', DemandeurCtrl.liste_demandeur);
+router.get('/allV', DemandeurCtrl.liste_demandeurv);
 
 router.post('/modif_demand',DemandeurCtrl.update_demandeur);
 

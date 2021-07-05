@@ -33,7 +33,7 @@ function errorHandler(error) {
 }
 
 exports.accuse = (req, res) => {
-    var content = fs.readFileSync(path.resolve('./pdf-form', 'Accusé_Reception_recours_0.docx'), 'binary');
+    var content = fs.readFileSync(path.resolve('./pdf-form', 'Accusé_Reception.docx'), 'binary');
     var zip = new PizZip(content);
     var doc;
     try {
@@ -49,7 +49,7 @@ exports.accuse = (req, res) => {
         var k = 1;
         for (i = 0; i < obj.length && k != 0; i++) {
             console.log(obj[i].Numero_dossier)
-            if (obj[i].Numero_dossier === req.body.num_dossier) {
+            if (obj[i].matricule === req.body.matricule) {
 
                 k = 0;
             }
@@ -70,9 +70,11 @@ exports.accuse = (req, res) => {
             }
 
             var buf = doc.getZip().generate({ type: 'nodebuffer' });
-            fs.writeFileSync(path.resolve('./pdf-form', 'Accusé_Reception_Recours.docx'), buf);
-            var email="test3@esi.dz";
-            var donnee="Génération de l'accusée de reception du recours d'un demandeur . ";
+            fs.writeFileSync(path.resolve('./pdf-form', 'Accusé_Reception1.docx'), buf);
+            const token = req.headers.authorization.split(' ')[1];//recuperer le payload dans la chaine token "le profil"
+            const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+            const email = decodedToken.email;
+            var donnee="Génération de l'accusée de reception du recours d'un demandeur. ";
             ajouter(email,donnee);
             //res.json({ "message": "opp terminée" });
             //cette instruction permet d'envoyer l'accusé de reception au navigateur
@@ -82,6 +84,8 @@ exports.accuse = (req, res) => {
         };
     });
 };
+
+
 
 
 exports.ajout_recours = (req, res, next) => {//qui permet d'ajouterun recours à la liste de recours 
@@ -102,6 +106,9 @@ exports.ajout_recours = (req, res, next) => {//qui permet d'ajouterun recours à
             "motif": req.body.motif || "Champ non spécifié"
         });
         ecrirer();
+
+        //if (Demandeur({ "Numero_dossier": req.body.Numero_dossier }).select("recours").length===1){
+
               Demandeur({"Numero_dossier":req.body.Numero_dossier}).update(
                 {
                     "Numero_dossier":"R"+req.body.Numero_dossier,
@@ -121,7 +128,8 @@ exports.ajout_recours = (req, res, next) => {//qui permet d'ajouterun recours à
     }
 };
 
-exports.afficher = (req, res,next) => {//afficher la listedes demandeurs qui ont fait le recours 
+
+exports.afficher = (req, res,next) => {
     const token = req.headers.authorization.split(' ')[1];//recuperer le payload dans la chaine token "le profil"
     const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
     const email = decodedToken.email;

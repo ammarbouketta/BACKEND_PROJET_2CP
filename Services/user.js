@@ -5,11 +5,11 @@ const ecrire = require('../Models/user').ecrire;
 const { ajouter } = require('./historique');
 
 
-exports.signup = (req, res, next) => {//créationd'un compte parl'administrateur
-    if (User({ "email": req.body.email }).get().length === 0) {//si l'email n'existe pas 
-        bcrypt.hash(req.body.password, 10)//on fait un hash code pour le mot de passe 
+exports.signup = (req, res, next) => {
+    if (User({ "email": req.body.email }).get().length === 0) {
+        bcrypt.hash(req.body.password, 10)
             .then((hash) => {
-                const user = User.insert({//on insere dans le fichier physique des utilisateurs les iformation suivants
+                const user = User.insert({
                     "nom": req.body.nom,
                     "prenom": req.body.prenom,
                     "email": req.body.email,
@@ -17,10 +17,10 @@ exports.signup = (req, res, next) => {//créationd'un compte parl'administrateur
                     "type_profil": req.body.type_profil,
                     "photo_de_profil": req.body.photo_de_profil || ""
                 });
-                ecrire(process.env.User_file, User().get());//sauvegarde des informations 
+                ecrire(process.env.User_file, User().get());
                 const token = req.headers.authorization.split(' ')[1];//recuperer le payload dans la chaine token "le profil"
                 const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
-                const email = decodedToken.email;//pour gérer l'accées des utilisateurs 
+                const email = decodedToken.email;
                 var donnee="Création d'un compte par l'admin";
                 ajouter(email,donnee);
                 res.status(201).json({ message: 'Utilisateur créé !' });
@@ -33,7 +33,7 @@ exports.signup = (req, res, next) => {//créationd'un compte parl'administrateur
         });
     }
 }
-exports.lister = (req, res, next) => {//permet de lister la liste des utilisateurs
+exports.lister = (req, res, next) => {
     console.log(req.headers.authorization);
     
     const token = req.headers.authorization.split(' ')[1];//recuperer le payload dans la chaine token "le profil"
@@ -44,9 +44,8 @@ exports.lister = (req, res, next) => {//permet de lister la liste des utilisateu
     res.json(User().get());
     next();
 };
-exports.update_mot_de_passe = (req, res, next) => {//modifier mot de passe 
+exports.update_mot_de_passe = (req, res, next) => {
     if (User({ "email": req.body.email }).get().length === 1) {
-                //si user existe 
         bcrypt.hash(req.body.password, 10)
             .then(hash => {
                 const user = User({ "email": req.body.email }).update({
@@ -71,17 +70,17 @@ exports.update_mot_de_passe = (req, res, next) => {//modifier mot de passe
     }
 };
 
-exports.update_info = (req, res, next) => {//modifier infos d'un utilisateurs  utilisateur
+exports.update_info = (req, res, next) => {
     if (User({ "email": req.body.email }).get().length === 1) {
-        //si user existe 
       
-                const user = User({ "email": req.body.email }).update({//on modifie les informations qu'on veut sinon ca reste les mm informationsancienne sans etre modifier 
+                const user = User({ "email": req.body.email }).update({
                     "nom": req.body.nom||User({ "email": req.body.email }).select("nom")[0],
                     "prenom": req.body.prenom||User({ "email": req.body.email }).select("prenom")[0],
                     "type_profil":User({ "email": req.body.email }).select("type_profil")[0],
-                    "photo_de_profil": req.body.photo_de_profil||User({ "email": req.body.email }).select("photo_de_profil")[0],
+                    // "photo_de_profil": req.body.photo_de_profil||User({ "email": req.body.email }).select("photo_de_profil")[0],
+                    "email": req.body.email||User({ "email": req.body.email }).select("email")[0],
                 });
-                ecrire(process.env.User_file, User().get());//sauvegarder les modifications 
+                ecrire(process.env.User_file, User().get());
                 const token = req.headers.authorization.split(' ')[1];//recuperer le payload dans la chaine token "le profil"
                 const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
                 const email = decodedToken.email;
@@ -98,7 +97,7 @@ exports.update_info = (req, res, next) => {//modifier infos d'un utilisateurs  u
 
 
 exports.login = (req, res, next) => {
-    if (User({ "email": req.body.email,"type_profil":req.body.type_profil }).get().length === 1) {
+    if (User({ "email": req.body.email }).get().length === 1) {
         bcrypt.compare(req.body.password, User({ "email": req.body.email }).select('password')[0]).then(
                 (valid) => {
                     if (!valid) {
@@ -161,6 +160,32 @@ exports.infos_user = (req, res, next) => {
     if (User({ "email": email }).get().length === 1) {
         try {
             const user = User({ "email": email }).get()[0];
+            res.status(200).json({
+                "nom" : user.nom,
+                "prenom" : user.prenom,
+                "email": user.email,
+                "type_profil": user.type_profil,
+                //"photo_de_profil": user.photo_de_profil
+            });
+            var donnee="Affichage des informations d'un compte .";
+            ajouter(email,donnee); 
+        } catch (error) { res.status(400).json({ error }); }
+    } else {
+        res.json({
+            "Error": "User n'existe pas "
+        });
+    }
+    next();
+};
+
+exports.infos_user2 = (req, res, next) => {
+    const token = req.headers.authorization.split(' ')[1];//recuperer le payload dans la chaine token "le profil"
+    const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+    const email = decodedToken.email;
+
+    if (User({ "email": req.query.email }).get().length === 1) {
+        try {
+            const user = User({ "email": req.query.email }).get()[0];
             res.status(200).json({
                 "nom" : user.nom,
                 "prenom" : user.prenom,

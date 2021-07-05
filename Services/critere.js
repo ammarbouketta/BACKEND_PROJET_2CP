@@ -3,14 +3,11 @@ var demandeur = require('../Models/demandeur').Demandeur_db;
 var ecrire = require('../Models/critere').ecrire;
 var ecrire2 = require('../Models/demandeur').ecrire;
 const { ajouter } = require('./historique');
-/**pour ajouter un nouveau critère à laliste des critère  */
+
 exports.ajout_critere = (req, res, next) => {
-    /**ajoute du critére avec leur point dans le fichier physique critères  */
-    /**l'utilisateur entre le nom de lacatégorie ou il veut met le nouveau critére */
-    if (critere({ "categorie": req.body.categorie }).get().length === 1)/** si la catégorie exisste*/
+    if (critere({ "categorie": req.body.categorie }).get().length === 1)
     {
         try{
-            /**insertion de ce critére dans cette catégorie  */
             var obj=critere({"categorie":req.body.categorie}).select("criteres")[0];
             obj.push(
                         {
@@ -24,15 +21,14 @@ exports.ajout_critere = (req, res, next) => {
                             "criteres":obj
                         },"categorie"
                         );
-            ecrire();/**pour sauvegarder le  donnée  */
+            ecrire();
             var email="test3@esi.dz";
             var donnee="Ajout d'une critére ";
             ajouter(email,donnee);
-            /**ajout de critére pour chaque demandeur dans le fichier physique demandeurs */
-            demandeur().each(info =>{/**parcourt des deandeurs */
+            demandeur().each(info =>{
                     for(var i=0;i<info.nb_point_par_critere.length;i++)
                        {  
-                            if(info.nb_point_par_critere[i].categorie===req.body.categorie)/**ajout de critére dans lacatégorie qui convient pour un demandeur */
+                            if(info.nb_point_par_critere[i].categorie===req.body.categorie)
                               {
                                   info.nb_point_par_critere[i].criteres= obj;
                                   ecrire2();
@@ -45,9 +41,9 @@ exports.ajout_critere = (req, res, next) => {
             } catch (error) { res.status(500).json({ error })};
        
     }
-    else /**si la catégorie n'existe pas  */
+    else 
        {
-            const crit = critere.insert(/**on ajout la catégorie et cette catégorie contient le critére avec leur point */
+            const crit = critere.insert(
                         {
                               "categorie" :req.body.categorie,
                               "criteres":
@@ -60,7 +56,7 @@ exports.ajout_critere = (req, res, next) => {
            
                         });
                         ecrire();
-            demandeur().each(info =>{/**on ajout la catégorie pour chaque demandeur */
+            demandeur().each(info =>{
                 var i=info.nb_point_par_critere.length;
                     info.nb_point_par_critere[i]={
                                       "categorie" :req.body.categorie,
@@ -84,16 +80,15 @@ exports.ajout_critere = (req, res, next) => {
 }
 
 
-const situation_familliale = (id) => {/**on initialise tt les points à 0 */
+const situation_familliale = (id) => {
     obj = demandeur({ "Numero_dossier": id }).get()[0];
     obj.nb_point_par_critere[0].criteres[0].nb_points = 0;
     obj.nb_point_par_critere[0].criteres[1].nb_points = 0;
     obj.nb_point_par_critere[0].criteres[2].nb_points = 0;
     obj.nb_point_par_critere[0].criteres[3].nb_points = 0;
     obj.nb_point_par_critere[0].criteres[4].nb_points = 0;
-    /**on récupére le champ situation familiale  */
-    if (obj.info_generale.Situation_familliale === "célibataire") {
-        var age = Number((new Date().getTime() - new Date(obj.info_generale.Date_de_naissance).getTime()) / 31536000000);/**pour chaque demandeur o calcule leur age et on affecte les points */
+    if (obj.info_generale.Situation_familiale === "celibataire") {
+        var age = Number((new Date().getTime() - new Date(obj.info_generale.Date_de_naissance).getTime()) / 31536000000);
         if ((age >= 25) && (age < 30)) {
             obj.nb_point_par_critere[0].criteres[0].nb_points = 1;
         } else if (age >= 30 && age < 35) {
@@ -101,7 +96,7 @@ const situation_familliale = (id) => {/**on initialise tt les points à 0 */
         } else if (age >= 35) {
             obj.nb_point_par_critere[0].criteres[2].nb_points = 3;
         }
-    } else if (obj.info_generale.Situation_familliale === "marié" || obj.info_generale.Situation_familliale === "divorcé" || obj.info_generale.Situation_familliale === "veuf") {
+    } else if (obj.info_generale.Situation_familiale === "Marié(e)" || obj.info_generale.Situation_familiale === "Divorcé(e)" || obj.info_generale.Situation_familliale === "veuf(ve)") {
         obj.nb_point_par_critere[0].criteres[3].nb_points = 4;
     };
     switch (obj.info_generale.Nombre_enfants) {
@@ -144,7 +139,7 @@ const Grade = (id) => {
         case "12-15":
             obj.nb_point_par_critere[1].criteres[3].nb_points = 4;
             break;
-        case "16- et plus":
+        case "16  et plus":
             obj.nb_point_par_critere[1].criteres[4].nb_points = 5;
             break;
     };
@@ -209,20 +204,22 @@ const anciennete = (id) => {
 
 };
 
+
 const responsabilites = (id) => {
     var dem = demandeur({ "Numero_dossier": id }).get()[0];
     var obj=critere({"categorie": "responsabilités administratives"}).get()[0].criteres;
 obj.forEach(element => {
     if (element.nom==dem.Experience_professionnelle.Responsabilite){
         element.nb_points=2;
-    }else{
-        element.nb_points=0;
     }
+    // }else{
+    //     element.nb_points=0;
+    // }
 });
 return obj;
 };
 
-const affectation_id = (id) => {/**affectation des points authomatique  par demandeur (id) */
+const affectation_id = (id) => {
     var obj = demandeur({ "Numero_dossier": id }).get()[0];
     demandeur({ "Numero_dossier": id }).update({
         "nb_point_par_critere":
@@ -240,12 +237,10 @@ const affectation_id = (id) => {/**affectation des points authomatique  par dema
             
          ]
     });
-    ecrire2();/**sauvegarder les points dans le fichier dmandeur */
+    ecrire2();
 };
 
 const affectation = () => {
-    /**affectation des point authomatique à tout les demandeurs 
-    qui ont valider et avec dossier complet et non bénéficiare  utilisnt affectation(id)*/
     var obj = demandeur({
         "valider": true,
         "dossier_complet": true,
@@ -261,7 +256,7 @@ const affectation = () => {
 
 exports.affectation_auth = (req, res, next) => {
     //affectation();
-    affectation_id(req.query.Numero_dossier)
+    affectation_id(req.query.Numero_dossier + "erer")
     var email="test3@esi.dz";
               var donnee="Affectation authomatique des points de tous demandeur .";
               ajouter(email,donnee);
@@ -269,6 +264,7 @@ exports.affectation_auth = (req, res, next) => {
 }
 
 exports.affectation_auth_demand = (req, res, next) => {
+    console.log(req.body.Numero_dossier)
          if (demandeur({"Numero_dossier":req.body.Numero_dossier}).get().length ===1)
               {
        
@@ -286,7 +282,7 @@ exports.affectation_auth_demand = (req, res, next) => {
         next();
     }
 
-    exports.afficher = (req, res, next) => {/**affichage des points d'un demandeur  */
+    exports.afficher = (req, res, next) => {
         if (demandeur({"Numero_dossier":req.body.Numero_dossier}).get().length ===1)
         {
             var obj = demandeur({ "Numero_dossier": req.body.Numero_dossier }).get()[0];
@@ -306,7 +302,7 @@ exports.affectation_auth_demand = (req, res, next) => {
     }
     
     
-    exports.affect_manuel = (req, res, next) => {/** dans le cas ou an a ajouter un nouveau critére on a besoin de l'affectation  authomatique des points pour chaque demandeur */
+    exports.affect_manuel = (req, res, next) => {
     if (demandeur({"Numero_dossier":req.body.Numero_dossier}).get().length ===1)
         {
             var existe=false;
@@ -321,6 +317,7 @@ exports.affectation_auth_demand = (req, res, next) => {
                        {                            
                            if(obj.nb_point_par_critere[i].criteres[j].nom==req.body.criteres.nom)
                            {
+                            console.log("yes")
                             obj.nb_point_par_critere[i].criteres[j].nb_points=req.body.criteres.nb_points;
                             demandeur({ "Numero_dossier":req.body.Numero_dossier  }).update({
                                 "nb_point_par_critere":obj.nb_point_par_critere,
@@ -352,7 +349,7 @@ exports.affectation_auth_demand = (req, res, next) => {
 }
 
 
-//c'est une algorithme en plus qui permet de rajouter un critére à le fichier des critère 
+
 
 /*const _affectation = (req, res) => {
     obj = Demandeur({ "Numero_dossier": req.query.Numero_dossier }).select("nb_point_par_critere");
@@ -366,7 +363,6 @@ const dotEnv = require("dotenv");
 const { stringify } = require('querystring');
 const { get } = require('../routes/user');
 var mergeJSON = require("merge-json") ;
-
 function replaceErrors(key, value) {
     if (value instanceof Error) {
         return Object.getOwnPropertyNames(value).reduce(function(error, key) {
@@ -376,10 +372,8 @@ function replaceErrors(key, value) {
     }
     return value;
 }
-
 function errorHandler(error) {
     console.log(JSON.stringify({ error: error }, replaceErrors));
-
     if (error.properties && error.properties.errors instanceof Array) {
         const errorMessages = error.properties.errors.map(function(error) {
             return error.properties.explanation;
@@ -389,8 +383,6 @@ function errorHandler(error) {
     }
     throw error;
 }
-
-
 exports.ajoutcritere = (req, res) => {
     var content = fs.readFileSync(path.resolve('./pdf-form', 'crit_model.docx'), 'binary');
     var zip = new PizZip(content);
@@ -400,7 +392,6 @@ exports.ajoutcritere = (req, res) => {
     } catch (error) {
         errorHandler(error);
     }
-
     var obj;
     fs.readFile('C:\\Users\\dell\\backend-projet-2CP\\files\\critere.json', 'utf8', function(err, data) {
         if (err) throw err;
@@ -439,7 +430,6 @@ exports.ajoutcritere = (req, res) => {
         }
               else {obj[3].nom=" ";
             obj[3].point=" ";
-
              }
             if (  req.body.categorie==="responsabilités administratives" )
              { 
@@ -494,7 +484,6 @@ exports.ajoutcritere = (req, res) => {
           nom6:obj[6].nom,
           point6:obj[6].point,
           newcritere6:"{nom6}                                                                                       {point6}                                                                   {newcritere6}",
-
          
          
         });
@@ -506,12 +495,10 @@ exports.ajoutcritere = (req, res) => {
         {
             errorHandler(error);
         }
-
        
         var buf = doc.getZip().generate({ type: 'nodebuffer' });
         fs.writeFileSync(path.resolve('./pdf-form', 'crit_model.docx'), buf);
         fs.writeFileSync(path.resolve('./pdf-form', 'crit_fich.docx'), buf);
-
         res.json({ "message": "opp terminée" });
     });
        
@@ -525,7 +512,6 @@ exports.ajoutcritere = (req, res) => {
         }
     
    
-
            doc1.setData({
             nom: " ",
             point:" ",
@@ -566,7 +552,6 @@ exports.ajoutcritere = (req, res) => {
           var buf1 = doc1.getZip().generate({ type: 'nodebuffer' });
           fs.writeFileSync(path.resolve('./pdf-form', 'crit_fichier.docx'), buf1);
     
-
     
         
 }
