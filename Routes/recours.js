@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const RecoursCtrl = require('../Services/recours');
 
-router.get('/accuse', RecoursCtrl.accuse);
+router.post('/accuse', RecoursCtrl.accuse);
 
 router.post('/ajout_recours', RecoursCtrl.ajout_recours);
 

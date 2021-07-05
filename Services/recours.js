@@ -49,7 +49,7 @@ exports.accuse = (req, res) => {
         var k = 1;
         for (i = 0; i < obj.length && k != 0; i++) {
             console.log(obj[i].Numero_dossier)
-            if (obj[i].Numero_dossier === req.body.num_dossier) {
+            if (obj[i].matricule === req.body.matricule) {
 
                 k = 0;
             }

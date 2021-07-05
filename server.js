@@ -6,6 +6,7 @@ dotEnv.config();
 
 
 app.use( express.static("C:/backend-projet-2CP/uploads"));
+app.use( express.static("C:/backend-projet-2CP/pdf-form"));
 const cors = require ('cors');
 app.use(cors());
 
