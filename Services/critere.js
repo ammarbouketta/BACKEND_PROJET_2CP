@@ -6,7 +6,8 @@ const { ajouter } = require('./historique');
 
 exports.ajout_critere = (req, res, next) => {
     if (critere({ "categorie": req.body.categorie }).get().length === 1)
-    {
+    {//ajout d'une critére dans une catégorie existant
+        //si la catégorie exite
         try{
             var obj=critere({"categorie":req.body.categorie}).select("criteres")[0];
             obj.push(
@@ -14,7 +15,7 @@ exports.ajout_critere = (req, res, next) => {
                               "nom":req.body.nom,
                               "nb_points":req.body.nb_points
                         }
-                    );
+                    );//ajout du critére
             const crit = critere.merge(
                         {
                             "categorie":req.body.categorie,
@@ -23,7 +24,7 @@ exports.ajout_critere = (req, res, next) => {
                         );
             ecrire();
             var email="test3@esi.dz";
-            var donnee="Ajout d'une critére ";
+            var donnee="Ajout du critére "+req.body.nom+" dans la catégorie "+req.body.categorie+".";
             ajouter(email,donnee);
             demandeur().each(info =>{
                     for(var i=0;i<info.nb_point_par_critere.length;i++)
@@ -41,7 +42,7 @@ exports.ajout_critere = (req, res, next) => {
             } catch (error) { res.status(500).json({ error })};
        
     }
-    else 
+    else //ajout d'une nouvelle catégorie avec leur critére 
        {
             const crit = critere.insert(
                         {
@@ -219,7 +220,7 @@ obj.forEach(element => {
 return obj;
 };
 
-const affectation_id = (id) => {
+const affectation_id = (id) => {//affectation automatique des points d'un demandeur 
     var obj = demandeur({ "Numero_dossier": id }).get()[0];
     demandeur({ "Numero_dossier": id }).update({
         "nb_point_par_critere":
@@ -237,7 +238,7 @@ const affectation_id = (id) => {
             
          ]
     });
-    ecrire2();
+    ecrire2();//sauvegarde  dans le fichier demandeur 
 };
 
 const affectation = () => {
@@ -263,14 +264,13 @@ exports.affectation_auth = (req, res, next) => {
     res.status(201).json({ message: 'affectation faite!' });   
 }
 
-exports.affectation_auth_demand = (req, res, next) => {
-    console.log(req.body.Numero_dossier)
+exports.affectation_auth_demand = (req, res, next) => {//affectation authomatique des points a tous les demandeurs utilisants la fonction affectation_id
          if (demandeur({"Numero_dossier":req.body.Numero_dossier}).get().length ===1)
               {
        
                 affectation_id(req.body.Numero_dossier)    
                     var email="test3@esi.dz";
-                    var donnee="Affectationdes des points d'un demandeur .";
+                    var donnee="Affectation des points du demandeur qui a numéro de dossier :"+req.body.Numero_dossier+".";
                     ajouter(email,donnee);
                 res.status(200).json({ message: 'point affecter !' });
 
@@ -282,14 +282,14 @@ exports.affectation_auth_demand = (req, res, next) => {
         next();
     }
 
-    exports.afficher = (req, res, next) => {
+    exports.afficher = (req, res, next) => {//affichage des points des demandeurs 
         if (demandeur({"Numero_dossier":req.body.Numero_dossier}).get().length ===1)
         {
             var obj = demandeur({ "Numero_dossier": req.body.Numero_dossier }).get()[0];
             
             
               var email="test3@esi.dz";
-              var donnee="affichage des points d'un demandeur .";
+              var donnee="affichage des points du demandeur qui a le numéro de dossier : "+req.body.Numero_dossier;
               ajouter(email,donnee);
               res.json(obj.nb_point_par_critere);
 
@@ -302,7 +302,7 @@ exports.affectation_auth_demand = (req, res, next) => {
     }
     
     
-    exports.affect_manuel = (req, res, next) => {
+    exports.affect_manuel = (req, res, next) => {//affectation manuel des points pour chaque critére pour chaque demandeur en cas de rajout d'un nouveau critére 
     if (demandeur({"Numero_dossier":req.body.Numero_dossier}).get().length ===1)
         {
             var existe=false;
@@ -327,7 +327,7 @@ exports.affectation_auth_demand = (req, res, next) => {
                             ecrire2();
                             existe=true;
                              var email="test3@esi.dz";
-                             var donnee="Affectation manuele des points d'un demandeur .";
+                             var donnee="Affectation manuele des points du demandeur qui a le numéro de dossier :"+req.body.Numero_dossier;
                              ajouter(email,donnee);
                            }
                        }

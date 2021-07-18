@@ -21,7 +21,7 @@ exports.signup = (req, res, next) => {
                 const token = req.headers.authorization.split(' ')[1];//recuperer le payload dans la chaine token "le profil"
                 const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
                 const email = decodedToken.email;
-                var donnee="Création d'un compte par l'admin";
+                var donnee="Création d'un nouveau utilisateur "+req.body.email+" par l'administrateur .";
                 ajouter(email,donnee);
                 res.status(201).json({ message: 'Utilisateur créé !' });
             })
@@ -53,7 +53,7 @@ exports.update_mot_de_passe = (req, res, next) => {
                 });
                 ecrire(process.env.User_file, User().get());
                 var email1="test3@esi.dz";
-                var donnee="Modification de mot de passe d'un compte .";
+                var donnee="Modification de mot de passe du compte "+req.body.email;
                 ajouter(email1,donnee);
                 res.status(200).json({ message: 'Infos modifiées !' });
                 next();
@@ -84,7 +84,7 @@ exports.update_info = (req, res, next) => {
                 const token = req.headers.authorization.split(' ')[1];//recuperer le payload dans la chaine token "le profil"
                 const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
                 const email = decodedToken.email;
-                var donnee="Modification des informations d'un compte .";
+                var donnee="Modification des informations du compte "+req.body.email;
                 ajouter(email,donnee);
                 res.status(200).json({ message: 'Infos modifiées !' });       
     } else {
@@ -107,7 +107,7 @@ exports.login = (req, res, next) => {
                     }
                     //mot de passe correcte, on genere donc notre token a base de profil de l'utilisateur
                     var email1=req.body.email;
-                    var donnee="L'utilisateur connecté(e).";
+                    var donnee="L'utilisateur "+req.body.email+" est connecté(e).";
                     ajouter(email1,donnee);
                     res.status(200).json({
                         profil: User({ "email": req.body.email }).select('type_profil')[0],
@@ -142,7 +142,7 @@ exports.delete_user = (req, res, next) => {
             const token = req.headers.authorization.split(' ')[1];//recuperer le payload dans la chaine token "le profil"
             const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
             const email = decodedToken.email;
-            var donnee="Suppression d'une compte.";
+            var donnee="Suppression du compte "+req.body.email;
             ajouter(email,donnee);
             res.status(200).json({ message: 'user supprimé !' })
         } catch (error) { res.status(400).json({ error }) };
@@ -167,7 +167,7 @@ exports.infos_user = (req, res, next) => {
                 "type_profil": user.type_profil,
                 //"photo_de_profil": user.photo_de_profil
             });
-            var donnee="Affichage des informations d'un compte .";
+            var donnee="Affichage des informations du compte ";
             ajouter(email,donnee); 
         } catch (error) { res.status(400).json({ error }); }
     } else {
@@ -193,7 +193,7 @@ exports.infos_user2 = (req, res, next) => {
                 "type_profil": user.type_profil,
                 //"photo_de_profil": user.photo_de_profil
             });
-            var donnee="Affichage des informations d'un compte .";
+            var donnee="Affichage des informations du compte .";
             ajouter(email,donnee); 
         } catch (error) { res.status(400).json({ error }); }
     } else {

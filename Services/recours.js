@@ -32,7 +32,7 @@ function errorHandler(error) {
     throw error;
 }
 
-exports.accuse = (req, res) => {
+exports.accuse = (req, res) => {//génération de l'accusée de réception de recours d'un demandeur 
     var content = fs.readFileSync(path.resolve('./pdf-form', 'Accusé_Reception.docx'), 'binary');
     var zip = new PizZip(content);
     var doc;
@@ -74,7 +74,7 @@ exports.accuse = (req, res) => {
             const token = req.headers.authorization.split(' ')[1];//recuperer le payload dans la chaine token "le profil"
             const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
             const email = decodedToken.email;
-            var donnee="Génération de l'accusée de reception du recours d'un demandeur. ";
+            var donnee="Génération de l'accusée de reception du recours du demandeur qui a le numéro de dossier : "+obj[i - 1].Numero_dossier;
             ajouter(email,donnee);
             //res.json({ "message": "opp terminée" });
             //cette instruction permet d'envoyer l'accusé de reception au navigateur
@@ -119,7 +119,7 @@ exports.ajout_recours = (req, res, next) => {//qui permet d'ajouterun recours à
         const token = req.headers.authorization.split(' ')[1];//recuperer le payload dans la chaine token "le profil"
         const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
         const email = decodedToken.email;
-        var donnee="Ajout d'un recours.";
+        var donnee="Ajout de recours pour un demandeur qui a le numéro de dossier : "+req.body.Numero_dossier;
         ajouter(email,donnee);
         res.status(200).json({ message: ' opp  terminée !' });
 
@@ -129,7 +129,7 @@ exports.ajout_recours = (req, res, next) => {//qui permet d'ajouterun recours à
 };
 
 
-exports.afficher = (req, res,next) => {
+exports.afficher = (req, res,next) => {//afficher la liste de recours 
     const token = req.headers.authorization.split(' ')[1];//recuperer le payload dans la chaine token "le profil"
     const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
     const email = decodedToken.email;

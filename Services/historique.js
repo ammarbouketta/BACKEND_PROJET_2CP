@@ -3,13 +3,13 @@ var user = require('../Models/user').User_db;
 var ecrire = require('../Models/historique').ecrire;
 
 
-exports.afficher = (req, res,next) => {
+exports.afficher = (req, res,next) => {//afficher historique
     res.json(historique().get());
     next();
 
 }
 
-exports.ajouter = (email,donnee) => {
+exports.ajouter = (email,donnee) => {//ajout d'un action au fichier historique 
 
     var obj =user({"email":email}).get();
     console.log(obj)
@@ -28,11 +28,11 @@ exports.ajouter = (email,donnee) => {
     var date=date1 + "-" + month + "-" + year ; 
     var heure= hours + ":" + minutes + ":" + seconds;
    historique.insert({
-       "email":email,
-       "type_profil":user({ "email": email }).select("type_profil")[0],
-       "date":date,
-       "heure":heure,
-       "donnee":donnee,
+       "email":email,//qui fait l'action 
+       "type_profil":user({ "email": email }).select("type_profil")[0],//le type de profil de l'utilisateur qui a fait l'action
+       "date":date,//la date de l'action 
+       "heure":heure,//heure de l'action
+       "donnee":donnee,//action qu'il a fait
     });
-   ecrire();
+   ecrire();//sauvegarde
 }
