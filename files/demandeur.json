@@ -2,7 +2,7 @@
     {
         "Numero_dossier": "0001/2021",
         "matricule": "0000001",
-        "Nombre_de_points": 29,
+        "Nombre_de_points": "23500200000006",
         "info_generale": {
             "nom": "fergui",
             "prenom": "samy",
@@ -1731,4 +1731,4 @@
         "___id": "T000009R000010",
         "___s": true
     }
-]     
+]

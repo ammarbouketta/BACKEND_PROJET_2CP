@@ -30,16 +30,6 @@
         "___s": true
     },
     {
-        "nom": "sait",
-        "prenom": "tinhinane",
-        "email": "tinhinane@gmail.com",
-        "password": "$2b$10$AZrQjTLzNbxlHMRGR9U23eD5cBWEfiYm1Xr0c8vczUw5kca9QwuPq",
-        "type_profil": "editeur",
-        "photo_de_profil": "",
-        "___id": "T000009R000005",
-        "___s": true
-    },
-    {
         "nom": "moussaoui",
         "prenom": "yasmine",
         "email": "yasmine@gmail.com",

@@ -203,3 +203,4 @@ exports.infos_user2 = (req, res, next) => {
     }
     next();
 };
+
