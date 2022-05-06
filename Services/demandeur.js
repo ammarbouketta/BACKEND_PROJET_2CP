@@ -7,7 +7,7 @@ var path = require('path');
 const ecrire = require('../Models/demandeur').ecrire;
 const { ajouter } = require('./historique');
 const ecrireC = require('../Models/classement').ecrire;
-
+var a;
 
 
 function replaceErrors(key, value)
